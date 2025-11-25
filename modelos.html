@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Modelos 3D – Visualização</title>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<style>
+#creatorFooter {
+  width: 100%;
+  text-align: center;
+  padding: 25px 0;
+  font-size: 15px;
+  color: #064F57;
+  opacity: 0.95;
+  margin-top: 40px;
+}
+
+#creatorFooter a {
+  color: #0A676C;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(180deg, #5CC9C4 0%, #B3ECE4 45%, #F7F6E6 100%);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #backBtnTop {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    padding: 10px 18px;
+    background: #0A676C;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 999;
+    border: none;
+  }
+
+  header {
+    width: 100%;
+    text-align: center;
+    padding: 60px 20px 20px;
+    color: #064F57;
+  }
+
+  h1 {
+    font-weight: 900;
+    margin: 0;
+  }
+
+  .viewer-card {
+    width: 90%;
+    max-width: 380px;
+    background: #ffffffdd;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  }
+
+  .viewer-title {
+    font-size: 18px;
+    color: #05575C;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  model-viewer {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    background: #EAF7F5;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .btn-ar, .btn-details {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .btn-ar { background: #1D8F8A; }
+  .btn-details { background: #05575C; }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0.4);
+    z-index: 2000;
+  }
+
+  .details-box {
+    background: white;
+    width: 85%;
+    max-width: 420px;
+    padding: 22px;
+    border-radius: 16px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+    text-align: left;
+    color: #05575C;
+  }
+
+  .close-modal {
+    margin-top: 18px;
+    background: #0A676C;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    width: 100%;
+  }
+</style>
+</head>
+
+<body>
+
+<button id="backBtnTop" onclick="window.location.href='index.html'">← Voltar</button>
+<button id="creditsBtn" onclick="openCredits()" style="
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  padding: 10px 18px;
+  background: #0A676C;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 999;
+  border: none;
+">Créditos</button>
+
+
+<header>
+  <h1>Modelos 3D</h1>
+  <p>Visualize os modelos antes de iniciar a câmera</p>
+</header>
+
+<!-- CARD – MONSTERA -->
+<div class="viewer-card">
+  <div class="viewer-title">Monstera Deliciosa – Costela-de-Adão</div>
+  <model-viewer src="assets/monstera.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+  <div class="btn-row">
+    <button class="btn-details" onclick="openMonstera()">Ver Detalhes</button>
+  </div>
+</div>
+
+<!-- CARD – DRACENA -->
+<div class="viewer-card">
+  <div class="viewer-title">Dracena Variegata – Planta de Interior</div>
+  <model-viewer src="assets/indoor_plant.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+  <div class="btn-row">
+    <button class="btn-details" onclick="openDracena()">Ver Detalhes</button>
+  </div>
+</div>
+
+<!-- CARD – PHLOX -->
+<div class="viewer-card">
+  <div class="viewer-title">Blanket Phlox – Flox Rasteira</div>
+  <model-viewer src="assets/blanket_phlox.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+  <div class="btn-row">
+    <button class="btn-details" onclick="openPhlox()">Ver Detalhes</button>
+  </div>
+</div>
+
+<!-- CARD – RHIZOME -->
+<div class="viewer-card">
+  <div class="viewer-title">Rhizome Plant – Planta Tropical</div>
+  <model-viewer src="assets/rhyzome_plant.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+  <div class="btn-row">
+    <button class="btn-details" onclick="openRhizome()">Ver Detalhes</button>
+  </div>
+</div>
+
+<!-- CARD – ARMERIA -->
+<div class="viewer-card">
+  <div class="viewer-title">Armeria Marítima – Planta Ornamental</div>
+  <model-viewer src="assets/flower_armeria.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+  <div class="btn-row">
+    <button class="btn-details" onclick="openArmeria()">Ver Detalhes</button>
+  </div>
+</div>
+
+<!-- NOVO CARD – ORCHIDEA -->
+<div class="viewer-card">
+  <div class="viewer-title">Orchidea – Orquídea Rosa</div>
+  <model-viewer src="assets/orchidea.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+  <div class="btn-row">
+    <button class="btn-details" onclick="openOrchidea()">Ver Detalhes</button>
+  </div>
+</div>
+
+<!-- ========================= -->
+<!-- MODAIS -->
+<!-- ========================= -->
+<div id="modalMonstera" class="modal-overlay">
+  <div class="details-box">
+    <h3>Monstera Deliciosa</h3>
+    <p>Planta elegante e símbolo de crescimento.<br><br><strong>Benefícios:</strong><br>• Purifica o ar<br>• Eleva a umidade<br>• Melhora criatividade<br>• Perfeita para decoração moderna</p>
+    <button class="close-modal" onclick="closeMonstera()">Fechar</button>
+  </div>
+</div>
+
+<div id="modalDracena" class="modal-overlay">
+  <div class="details-box">
+    <h3>Dracena Variegata</h3>
+    <p>Planta resistente ideal para interiores.<br><br><strong>Benefícios:</strong><br>• Purifica toxinas do ar<br>• Fácil de cuidar<br>• Boa para quartos e escritórios<br>• Traz energia renovadora</p>
+    <button class="close-modal" onclick="closeDracena()">Fechar</button>
+  </div>
+</div>
+
+<div id="modalPhlox" class="modal-overlay">
+  <div class="details-box">
+    <h3>Blanket Phlox</h3>
+    <p>Planta rasteira muito ornamental.<br><br><strong>Benefícios:</strong><br>• Ideal para cobrir superfícies<br>• Atrai polinizadores<br>• Muito decorativa<br>• Traz suavidade ao ambiente</p>
+    <button class="close-modal" onclick="closePhlox()">Fechar</button>
+  </div>
+</div>
+
+<div id="modalRhizome" class="modal-overlay">
+  <div class="details-box">
+    <h3>Rhizome Plant</h3>
+    <p>Planta tropical ideal para interiores iluminados.<br><br><strong>Benefícios:</strong><br>• Traz sensação de frescor<br>• Fácil de manter<br>• Excelente para mesas e aparadores<br>• Energia leve e natural</p>
+    <button class="close-modal" onclick="closeRhizome()">Fechar</button>
+  </div>
+</div>
+
+<div id="modalArmeria" class="modal-overlay">
+  <div class="details-box">
+    <h3>Armeria maritima</h3>
+    <p>Planta ornamental resistente com flores rosadas.<br><br><strong>Benefícios:</strong><br>• Fácil de cuidar<br>• Resistente ao calor<br>• Perfeita para decoração minimalista<br>• Transmite leveza e elegância</p>
+    <button class="close-modal" onclick="closeArmeria()">Fechar</button>
+  </div>
+</div>
+
+<div id="modalOrchidea" class="modal-overlay">
+  <div class="details-box">
+    <h3>Orchidea (Orquídea Rosa)</h3>
+    <p>Flor elegante e simbólica, conhecida pela sua beleza e harmonia.<br><br><strong>Benefícios:</strong><br>• Decoração refinada e natural<br>• Representa amor, beleza e serenidade<br>• Ideal para interiores iluminados<br>• Transmite leveza e sofisticação</p>
+    <button class="close-modal" onclick="closeOrchidea()">Fechar</button>
+  </div>
+</div>
+
+<script>
+  function openMonstera(){modalMonstera.style.display="flex";}
+  function closeMonstera(){modalMonstera.style.display="none";}
+  function openDracena(){modalDracena.style.display="flex";}
+  function closeDracena(){modalDracena.style.display="none";}
+  function openPhlox(){modalPhlox.style.display="flex";}
+  function closePhlox(){modalPhlox.style.display="none";}
+  function openRhizome(){modalRhizome.style.display="flex";}
+  function closeRhizome(){modalRhizome.style.display="none";}
+  function openArmeria(){modalArmeria.style.display="flex";}
+  function closeArmeria(){modalArmeria.style.display="none";}
+  function openOrchidea(){modalOrchidea.style.display="flex";}
+  function closeOrchidea(){modalOrchidea.style.display="none";}
+  function openCredits(){ creditsModal.style.display = "flex"; }
+  function closeCredits(){ creditsModal.style.display = "none"; }
+
+</script>
+
+<div id="creditsModal" class="modal-overlay">
+  <div class="details-box" style="max-width: 600px;">
+    <h3>Créditos dos Modelos 3D</h3>
+    <ul style="list-style:none;padding-left:0;">
+      <li>🌿 <strong>Monstera Deliciosa</strong> – Modelo de <a href="https://sketchfab.com/" target="_blank">Sketchfab</a></li>
+      <li>🌱 <strong>Dracena Variegata</strong> – Modelo de <a href="https://sketchfab.com/" target="_blank">Sketchfab</a></li>
+      <li>🌸 <strong>Blanket Phlox</strong> – Modelo de <a href="https://sketchfab.com/" target="_blank">Sketchfab</a></li>
+      <li>🌾 <strong>Rhizome Plant</strong> – Modelo de <a href="https://sketchfab.com/" target="_blank">Sketchfab</a></li>
+      <li>🌼 <strong>Armeria Marítima</strong> – Modelo de <a href="https://sketchfab.com/" target="_blank">Sketchfab</a></li>
+      <li>💮 <strong>Orchidea</strong> – Modelo de <a href="https://sketchfab.com/antoniorossini" target="_blank">Antonio Rossini</a></li>
+    </ul>
+    <p style="font-size:14px;opacity:0.8;">Modelos usados apenas para fins educacionais e demonstrativos.</p>
+    <button class="close-modal" onclick="closeCredits()">Fechar</button>
+  </div>
+</div>
+
+<footer id="creatorFooter">
+  Criado por <a href="https://jadeprog.github.io/site/?utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank">@jadepaz</a>
+</footer>
+
+</body>
+</html>
