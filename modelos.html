@@ -8,23 +8,23 @@
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <style>
-#creatorFooter {
-  width: 100%;
-  text-align: center;
-  padding: 25px 0;
-  font-size: 15px;
-  color: #064F57;
-  opacity: 0.95;
-  margin-top: 40px;
-}
+  /* Footer do criador */
+  #creatorFooter {
+    width: 100%;
+    text-align: center;
+    padding: 25px 0;
+    font-size: 15px;
+    color: #064F57;
+    opacity: 0.95;
+    margin-top: 40px;
+  }
+  #creatorFooter a {
+    color: #0A676C;
+    font-weight: 700;
+    text-decoration: none;
+  }
 
-#creatorFooter a {
-  color: #0A676C;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-
+  /* Base */
   body {
     margin: 0;
     padding: 0;
@@ -36,6 +36,7 @@
     align-items: center;
   }
 
+  /* Botões topo */
   #backBtnTop {
     position: fixed;
     top: 15px;
@@ -50,19 +51,34 @@
     z-index: 999;
     border: none;
   }
+  #creditsBtn {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    padding: 10px 18px;
+    background: #0A676C;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 999;
+    border: none;
+  }
 
+  /* Header */
   header {
     width: 100%;
     text-align: center;
     padding: 60px 20px 20px;
     color: #064F57;
   }
-
   h1 {
     font-weight: 900;
     margin: 0;
   }
 
+  /* Cards */
   .viewer-card {
     width: 90%;
     max-width: 380px;
@@ -72,27 +88,23 @@
     margin-bottom: 25px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.15);
   }
-
   .viewer-title {
     font-size: 18px;
     color: #05575C;
     font-weight: 700;
     margin-bottom: 12px;
   }
-
   model-viewer {
     width: 100%;
     height: 300px;
     border-radius: 12px;
     background: #EAF7F5;
   }
-
   .btn-row {
     display: flex;
     gap: 10px;
     margin-top: 12px;
   }
-
   .btn-ar, .btn-details {
     flex: 1;
     padding: 10px;
@@ -102,10 +114,10 @@
     font-weight: 700;
     cursor: pointer;
   }
-
   .btn-ar { background: #1D8F8A; }
   .btn-details { background: #05575C; }
 
+  /* Modal */
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -118,7 +130,6 @@
     background: rgba(0,0,0,0.4);
     z-index: 2000;
   }
-
   .details-box {
     background: white;
     width: 85%;
@@ -129,7 +140,6 @@
     text-align: left;
     color: #05575C;
   }
-
   .close-modal {
     margin-top: 18px;
     background: #0A676C;
@@ -141,27 +151,32 @@
     font-weight: 700;
     width: 100%;
   }
+
+  /* Etiqueta AR flutuante (hotspot) */
+  .ar-tag {
+    background: #ffffffee;
+    backdrop-filter: blur(6px);
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: #05575C;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    width: 160px;
+    text-align: center;
+  }
+
+  /* Esconde hotspots fora do AR (fallback via CSS; JS reforça abaixo) */
+  .ar-hotspot {
+    display: none;
+  }
 </style>
 </head>
 
 <body>
 
 <button id="backBtnTop" onclick="window.location.href='index.html'">← Voltar</button>
-<button id="creditsBtn" onclick="openCredits()" style="
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  padding: 10px 18px;
-  background: #0A676C;
-  color: white;
-  font-size: 16px;
-  font-weight: 700;
-  border-radius: 10px;
-  cursor: pointer;
-  z-index: 999;
-  border: none;
-">Créditos</button>
-
+<button id="creditsBtn" onclick="openCredits()">Créditos</button>
 
 <header>
   <h1>Modelos 3D</h1>
@@ -171,7 +186,27 @@
 <!-- CARD – MONSTERA -->
 <div class="viewer-card">
   <div class="viewer-title">Monstera Deliciosa – Costela-de-Adão</div>
-  <model-viewer src="assets/monstera.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+
+  <model-viewer src="assets/monstera.glb"
+    auto-rotate
+    camera-controls
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    exposure="1">
+
+    <!-- HOTSPOT 3D (altura média) -->
+    <div class="ar-hotspot" slot="hotspot-monstera"
+         data-position="0 1 0"
+         data-normal="0 1 0">
+      <div class="ar-tag">
+        🌿 Monstera<br>
+        Purifica o ar<br>
+        Meia sombra e rega moderada
+      </div>
+    </div>
+
+  </model-viewer>
+
   <div class="btn-row">
     <button class="btn-details" onclick="openMonstera()">Ver Detalhes</button>
   </div>
@@ -180,7 +215,27 @@
 <!-- CARD – DRACENA -->
 <div class="viewer-card">
   <div class="viewer-title">Dracena Variegata – Planta de Interior</div>
-  <model-viewer src="assets/indoor_plant.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+
+  <model-viewer src="assets/indoor_plant.glb"
+    auto-rotate
+    camera-controls
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    exposure="1">
+
+    <!-- HOTSPOT 3D (planta mais alta) -->
+    <div class="ar-hotspot" slot="hotspot-dracena"
+         data-position="0 1.2 0"
+         data-normal="0 1 0">
+      <div class="ar-tag">
+        🌱 Dracena<br>
+        Fácil de cuidar<br>
+        Luz indireta e pouca água
+      </div>
+    </div>
+
+  </model-viewer>
+
   <div class="btn-row">
     <button class="btn-details" onclick="openDracena()">Ver Detalhes</button>
   </div>
@@ -189,7 +244,27 @@
 <!-- CARD – PHLOX -->
 <div class="viewer-card">
   <div class="viewer-title">Blanket Phlox – Flox Rasteira</div>
-  <model-viewer src="assets/blanket_phlox.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+
+  <model-viewer src="assets/blanket_phlox.glb"
+    auto-rotate
+    camera-controls
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    exposure="1">
+
+    <!-- HOTSPOT 3D (planta baixa) -->
+    <div class="ar-hotspot" slot="hotspot-phlox"
+         data-position="0 0.6 0"
+         data-normal="0 1 0">
+      <div class="ar-tag">
+        🌸 Phlox<br>
+        Atrai polinizadores<br>
+        Boa para áreas ensolaradas
+      </div>
+    </div>
+
+  </model-viewer>
+
   <div class="btn-row">
     <button class="btn-details" onclick="openPhlox()">Ver Detalhes</button>
   </div>
@@ -198,7 +273,27 @@
 <!-- CARD – RHIZOME -->
 <div class="viewer-card">
   <div class="viewer-title">Rhizome Plant – Planta Tropical</div>
-  <model-viewer src="assets/rhyzome_plant.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+
+  <model-viewer src="assets/rhyzome_plant.glb"
+    auto-rotate
+    camera-controls
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    exposure="1">
+
+    <!-- HOTSPOT 3D (altura média) -->
+    <div class="ar-hotspot" slot="hotspot-rhizome"
+         data-position="0 1 0"
+         data-normal="0 1 0">
+      <div class="ar-tag">
+        🌾 Rhizome<br>
+        Frescor e leveza<br>
+        Luz difusa e rega regular
+      </div>
+    </div>
+
+  </model-viewer>
+
   <div class="btn-row">
     <button class="btn-details" onclick="openRhizome()">Ver Detalhes</button>
   </div>
@@ -207,23 +302,63 @@
 <!-- CARD – ARMERIA -->
 <div class="viewer-card">
   <div class="viewer-title">Armeria Marítima – Planta Ornamental</div>
-  <model-viewer src="assets/flower_armeria.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+
+  <model-viewer src="assets/flower_armeria.glb"
+    auto-rotate
+    camera-controls
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    exposure="1">
+
+    <!-- HOTSPOT 3D (planta baixa) -->
+    <div class="ar-hotspot" slot="hotspot-armeria"
+         data-position="0 0.6 0"
+         data-normal="0 1 0">
+      <div class="ar-tag">
+        🌼 Armeria<br>
+        Resistente ao calor<br>
+        Sol pleno e solo bem drenado
+      </div>
+    </div>
+
+  </model-viewer>
+
   <div class="btn-row">
     <button class="btn-details" onclick="openArmeria()">Ver Detalhes</button>
   </div>
 </div>
 
-<!-- NOVO CARD – ORCHIDEA -->
+<!-- CARD – ORCHIDEA -->
 <div class="viewer-card">
   <div class="viewer-title">Orchidea – Orquídea Rosa</div>
-  <model-viewer src="assets/orchidea.glb" auto-rotate camera-controls ar ar-modes="scene-viewer webxr quick-look"></model-viewer>
+
+  <model-viewer src="assets/orchidea.glb"
+    auto-rotate
+    camera-controls
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    exposure="1">
+
+    <!-- HOTSPOT 3D (altura média/alta) -->
+    <div class="ar-hotspot" slot="hotspot-orchidea"
+         data-position="0 1.1 0"
+         data-normal="0 1 0">
+      <div class="ar-tag">
+        💮 Orquídea<br>
+        Elegante e delicada<br>
+        Luz indireta e umidade
+      </div>
+    </div>
+
+  </model-viewer>
+
   <div class="btn-row">
     <button class="btn-details" onclick="openOrchidea()">Ver Detalhes</button>
   </div>
 </div>
 
 <!-- ========================= -->
-<!-- MODAIS -->
+<!-- MODAIS DE DETALHES -->
 <!-- ========================= -->
 <div id="modalMonstera" class="modal-overlay">
   <div class="details-box">
@@ -273,7 +408,11 @@
   </div>
 </div>
 
+<!-- ========================= -->
+<!-- SCRIPTS -->
+<!-- ========================= -->
 <script>
+  /* Abrir/fechar modais */
   function openMonstera(){modalMonstera.style.display="flex";}
   function closeMonstera(){modalMonstera.style.display="none";}
   function openDracena(){modalDracena.style.display="flex";}
@@ -289,8 +428,35 @@
   function openCredits(){ creditsModal.style.display = "flex"; }
   function closeCredits(){ creditsModal.style.display = "none"; }
 
+  /**
+   * Mostra hotspots APENAS quando a sessão AR estiver ativa.
+   * Funciona para todos os <model-viewer> da página.
+   */
+  const viewers = Array.from(document.querySelectorAll('model-viewer'));
+  viewers.forEach(v => {
+    const hotspots = v.querySelectorAll('.ar-hotspot');
+
+    // Começa escondido
+    hotspots.forEach(h => h.style.display = 'none');
+
+    // Quando a sessão AR começa
+    v.addEventListener('ar-status', (e) => {
+      const active = e.detail.status === 'session-started';
+      hotspots.forEach(h => h.style.display = active ? 'block' : 'none';
+      );
+    });
+
+    // Feedback de rastreamento (opcional, pode ajustar opacidade)
+    v.addEventListener('ar-tracking', (e) => {
+      const notTracking = e.detail.status === 'not-tracking';
+      hotspots.forEach(h => {
+        h.style.opacity = notTracking ? '0.6' : '1';
+      });
+    });
+  });
 </script>
 
+<!-- Modal de créditos -->
 <div id="creditsModal" class="modal-overlay">
   <div class="details-box" style="max-width: 600px;">
     <h3>Créditos dos Modelos 3D</h3>
