@@ -2,13 +2,13 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Modelos 3D – Visualização</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Jardim AR – Escolha sua Planta</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
-<!-- CSS EXTERNO -->
 <link rel="stylesheet" href="style2.css">
+
 </head>
 
 <body>
@@ -64,7 +64,7 @@
 
   </div> 
 
-  <div class="category-title">🌹 Experiência com</div>
+  <div class="category-title">🌹 Experiência AR</div>
   <div class="carousel-container">
     
     <div class="plant-card">
@@ -85,6 +85,20 @@
   <div class="category-title">Flores & Ornamentais</div>
   <div class="carousel-container">
     
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer src="assets/rosa.glb" auto-rotate camera-controls disable-zoom></model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Rosa Clássica</div>
+        <div class="card-desc">Símbolo de amor e elegância.</div>
+        <div class="btn-row">
+          <button class="btn-details" onclick="openModal('rosa')">Detalhes</button>
+          <button class="btn-ar" onclick="openCamera('rosa')">AR ✋</button>
+        </div>
+      </div>
+    </div>
+
     <div class="plant-card">
       <div class="model-preview">
         <model-viewer src="assets/orchidea.glb" auto-rotate camera-controls disable-zoom></model-viewer>
@@ -159,8 +173,7 @@
 
   <div id="creditsModal" class="modal-overlay">
     <div class="details-box">
-      <h3>Créditos</h3>
-      
+      <h3>Créditos dos Modelos 3D</h3>
       <ul style="list-style:none;padding-left:0; font-size:0.9rem; color:#555; margin-bottom: 20px;">
         <li>🌿 <strong>Monstera Deliciosa</strong> – Modelo de <a href="https://sketchfab.com/" target="_blank">Sketchfab</a></li>
         <li>🌱 <strong>Dracena Variegata</strong> – Modelo de <a href="https://sketchfab.com/" target="_blank">Sketchfab</a></li>
@@ -190,6 +203,7 @@
 
   <script>
     const plantInfo = {
+      'rosa': { title: 'Rosa Clássica', desc: 'A rainha das flores.', benefits: '• Perfume marcante<br>• Decoração romântica' },
       'monstera': { title: 'Monstera Deliciosa', desc: 'Planta elegante e símbolo de crescimento.', benefits: '• Purifica o ar<br>• Decoração moderna' },
       'dracena': { title: 'Dracena Variegata', desc: 'Planta resistente ideal para interiores.', benefits: '• Purifica toxinas<br>• Fácil de cuidar' },
       'phlox': { title: 'Blanket Phlox', desc: 'Planta rasteira ornamental.', benefits: '• Ideal para cobrir superfícies<br>• Atrai polinizadores' },
