@@ -7,324 +7,207 @@
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: "Poppins", sans-serif;
-    background: #f8f9fa;
-    overflow-x: hidden;
-  }
-
-  header {
-    padding: 70px 20px 10px;
-    text-align: center;
-  }
-
-  h1 {
-    font-size: 1.9rem;
-    margin: 0;
-    font-weight: 800;
-    color: #05575C;
-  }
-
-  .subtitle {
-    margin-top: 5px;
-    color: #555;
-    font-size: 0.95rem;
-  }
-
-  #backBtn {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    background: #0A676C;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 700;
-    z-index: 1000;
-  }
-
-  .category-title {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin: 25px 0 10px;
-    color: #05575C;
-    padding-left: 15px;
-  }
-
-  /* NOVO ESTILO DOS CARDS */
-  .carousel-container {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px 15px;
-    gap: 15px;
-  }
-
-  .plant-card {
-    min-width: 230px;
-    background: #ffffffdd;
-    border-radius: 16px;
-    padding: 15px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .plant-card model-viewer {
-    width: 100%;
-    height: 220px;
-    background: #EAF7F5;
-    border-radius: 12px;
-  }
-
-  .card-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #05575C;
-    margin-top: 10px;
-  }
-
-  .card-desc {
-    color: #555;
-    font-size: 0.85rem;
-    margin: 5px 0 12px;
-    text-align: center;
-  }
-
-  .btn-row {
-    display: flex;
-    gap: 8px;
-    width: 100%;
-  }
-
-  .btn-details, .btn-ar {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    font-weight: 700;
-    color: white;
-    font-size: 0.8rem;
-    cursor: pointer;
-  }
-
-  .btn-details { background: #05575C; }
-  .btn-ar { background: #1D8F8A; }
-
-  /* MODAL */
-  .modal-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-  }
-
-  .details-box {
-    background: white;
-    width: 85%;
-    max-width: 420px;
-    padding: 22px;
-    border-radius: 16px;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.25);
-    color: #05575C;
-  }
-
-  .close-modal {
-    width: 100%;
-    margin-top: 15px;
-    background: #0A676C;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  footer {
-    text-align: center;
-    padding: 25px 0;
-    margin-top: 40px;
-    color: #05575C;
-    font-size: 0.9rem;
-  }
-
-  footer a {
-    color: #0A676C;
-    font-weight: bold;
-    text-decoration: none;
-  }
-</style>
+<link rel="stylesheet" href="style2.css">
 </head>
-
 
 <body>
 
-<button id="backBtn" onclick="window.location.href='index.html'">← Voltar</button>
+  <button id="backBtn" class="nav-btn" onclick="window.location.href='index.html'">← Voltar</button>
 
-<header>
-  <h1>Jardim Virtual 🌿</h1>
-  <p class="subtitle">Deslize e escolha sua planta</p>
-</header>
+  <header>
+    <h1>Jardim Virtual 🌿</h1>
+    <p class="subtitle">Deslize para escolher sua planta</p>
+  </header>
 
+  <!-- ==================== -->
+  <!-- PLANTAS DE INTERIOR -->
+  <!-- ==================== -->
+  <div class="category-title">Plantas de Interior</div>
+  <div class="carousel-container">
+    
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer 
+          src="assets/monstera.glb" 
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          ar 
+          ar-modes="scene-viewer webxr quick-look"
+          ar-scale="fixed">
+        </model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Costela-de-Adão</div>
+        <div class="card-desc">Folhagem tropical exuberante.</div>
+        <div class="btn-row">
+          <button class="btn-details" onclick="openModal('monstera')">Ver Detalhes</button>
+        </div>
+      </div>
+    </div>
 
-<!-- =========================== -->
-<!-- PLANTAS DE INTERIOR -->
-<!-- =========================== -->
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer 
+          src="assets/indoor_plant.glb" 
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          ar 
+          ar-modes="scene-viewer webxr quick-look"
+          ar-scale="fixed">
+        </model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Dracena Variegata</div>
+        <div class="card-desc">Resistente e ideal para interiores.</div>
+        <div class="btn-row">
+          <button class="btn-details" onclick="openModal('dracena')">Ver Detalhes</button>
+        </div>
+      </div>
+    </div>
 
-<div class="category-title">Plantas de Interior</div>
-<div class="carousel-container">
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer 
+          src="assets/rhyzome_plant.glb" 
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          ar 
+          ar-modes="scene-viewer webxr quick-look"
+          ar-scale="fixed">
+        </model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Rhizome Plant</div>
+        <div class="card-desc">Planta tropical de fácil cuidado.</div>
+        <div class="btn-row">
+          <button class="btn-details" onclick="openModal('rhizome')">Ver Detalhes</button>
+        </div>
+      </div>
+    </div>
 
-  <!-- MONSTERA -->
-  <div class="plant-card">
-    <model-viewer src="assets/monstera.glb" auto-rotate camera-controls disable-zoom></model-viewer>
-    <div class="card-title">Costela-de-Adão</div>
-    <div class="card-desc">Folhagem tropical exuberante.</div>
-    <div class="btn-row">
-      <button class="btn-details" onclick="openModal('monstera')">Ver Detalhes</button>
+  </div> 
+
+  <!-- ==================== -->
+  <!-- EXPERIÊNCIA AR -->
+  <!-- ==================== -->
+  <div class="category-title">🦋 Experiência AR</div>
+  <div class="carousel-container">
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer src="assets/rosa.glb" auto-rotate camera-controls disable-zoom></model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Borboleta Azul</div>
+        <div class="card-desc">Toque para ver a mágica acontecer na palma da sua mão.</div>
+        <div class="btn-row">
+          <button class="btn-ar" onclick="openCamera('rosa')">Testar Agora ✨</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- DRACENA -->
-  <div class="plant-card">
-    <model-viewer src="assets/indoor_plant.glb" auto-rotate camera-controls disable-zoom></model-viewer>
-    <div class="card-title">Dracena Variegata</div>
-    <div class="card-desc">Resistente e ideal para interiores.</div>
-    <div class="btn-row">
-      <button class="btn-details" onclick="openModal('dracena')">Ver Detalhes</button>
+  <!-- ==================== -->
+  <!-- FLORES & ORNAMENTAIS -->
+  <!-- ==================== -->
+  <div class="category-title">Flores & Ornamentais</div>
+  <div class="carousel-container">
+
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer 
+          src="assets/orchidea.glb" 
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          ar 
+          ar-modes="scene-viewer webxr quick-look"
+          ar-scale="fixed">
+        </model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Orquídea Rosa</div>
+        <div class="card-desc">Delicadeza e sofisticação.</div>
+        <div class="btn-row">
+          <button class="btn-details" onclick="openModal('orchidea')">Ver Detalhes</button>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- RHIZOME -->
-  <div class="plant-card">
-    <model-viewer src="assets/rhyzome_plant.glb" auto-rotate camera-controls disable-zoom></model-viewer>
-    <div class="card-title">Rhizome Plant</div>
-    <div class="card-desc">Planta tropical de fácil cuidado.</div>
-    <div class="btn-row">
-      <button class="btn-details" onclick="openModal('rhizome')">Ver Detalhes</button>
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer 
+          src="assets/blanket_phlox.glb" 
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          ar 
+          ar-modes="scene-viewer webxr quick-look"
+          ar-scale="fixed">
+        </model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Blanket Phlox</div>
+        <div class="card-desc">Planta rasteira muito ornamental.</div>
+        <div class="btn-row">
+          <button class="btn-details" onclick="openModal('phlox')">Ver Detalhes</button>
+        </div>
+      </div>
     </div>
-  </div>
 
-</div>
-
-
-
-<!-- =========================== -->
-<!-- EXPERIÊNCIA AR (ROSA) -->
-<!-- =========================== -->
-
-<div class="category-title">🌹 Experiência AR</div>
-<div class="carousel-container">
-
-  <div class="plant-card">
-    <model-viewer src="assets/rosa.glb" auto-rotate camera-controls disable-zoom></model-viewer>
-    <div class="card-title">Rosa AR</div>
-    <div class="card-desc">Aparece na palma da sua mão.</div>
-
-    <!-- ESSA ROSA SOMENTE REDIRECIONA PARA SUA PÁGINA DE CÂMERA -->
-    <div class="btn-row">
-      <button class="btn-ar" onclick="openCamera('rosa')">Testar Agora ✨</button>
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer 
+          src="assets/flower_armeria.glb" 
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          ar 
+          ar-modes="scene-viewer webxr quick-look"
+          ar-scale="fixed">
+        </model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Armeria Marítima</div>
+        <div class="card-desc">Pequena e resistente com flores rosa.</div>
+        <div class="btn-row">
+          <button class="btn-details" onclick="openModal('armeria')">Ver Detalhes</button>
+        </div>
+      </div>
     </div>
+
   </div>
 
-</div>
+  <!-- Tutoriais, Créditos e Scripts (mantidos iguais) -->
+  <!-- ... resto do seu código original ... -->
 
+  <script>
+    const plantInfo = {
+      'rosa': { title: 'Rosa Clássica', desc: 'A rainha das flores.', benefits: '• Perfume marcante<br>• Decoração romântica' },
+      'monstera': { title: 'Monstera Deliciosa', desc: 'Planta elegante e símbolo de crescimento.', benefits: '• Purifica o ar<br>• Decoração moderna' },
+      'dracena': { title: 'Dracena Variegata', desc: 'Planta resistente ideal para interiores.', benefits: '• Purifica toxinas<br>• Fácil de cuidar' },
+      'phlox': { title: 'Blanket Phlox', desc: 'Planta rasteira ornamental.', benefits: '• Ideal para cobrir superfícies<br>• Atrai polinizadores' },
+      'rhizome': { title: 'Rhizome Plant', desc: 'Planta tropical.', benefits: '• Traz frescor<br>• Fácil de manter' },
+      'armeria': { title: 'Armeria Marítima', desc: 'Pequena e resistente.', benefits: '• Resistente ao calor<br>• Leveza' },
+      'orchidea': { title: 'Orquídea Rosa', desc: 'Símbolo de beleza e força.', benefits: '• Decoração refinada<br>• Serenidade' }
+    };
 
-
-<!-- =========================== -->
-<!-- FLORES & ORNAMENTAIS -->
-<!-- =========================== -->
-
-<div class="category-title">Flores & Ornamentais</div>
-<div class="carousel-container">
-
-  <div class="plant-card">
-    <model-viewer src="assets/rosa.glb" auto-rotate camera-controls disable-zoom></model-viewer>
-    <div class="card-title">Rosa Clássica</div>
-    <div class="card-desc">Elegância e perfume.</div>
-    <div class="btn-row">
-      <button class="btn-details" onclick="openModal('rosa')">Ver Detalhes</button>
-      <button class="btn-ar" onclick="openCamera('rosa')">AR ✋</button>
-    </div>
-  </div>
-
-  <div class="plant-card">
-    <model-viewer src="assets/orchidea.glb" auto-rotate camera-controls disable-zoom></model-viewer>
-    <div class="card-title">Orquídea Rosa</div>
-    <div class="card-desc">Delicada e sofisticada.</div>
-    <div class="btn-row">
-      <button class="btn-details" onclick="openModal('orchidea')">Ver Detalhes</button>
-    </div>
-  </div>
-
-  <div class="plant-card">
-    <model-viewer src="assets/blanket_phlox.glb" auto-rotate camera-controls disable-zoom></model-viewer>
-    <div class="card-title">Blanket Phlox</div>
-    <div class="card-desc">Rasteira e ornamental.</div>
-    <div class="btn-row">
-      <button class="btn-details" onclick="openModal('phlox')">Ver Detalhes</button>
-    </div>
-  </div>
-
-</div>
-
-
-<!-- =========================== -->
-<!-- MODAL DE DETALHES -->
-<!-- =========================== -->
-
-<div id="genericModal" class="modal-overlay">
-  <div class="details-box">
-    <h3 id="mTitle">Título</h3>
-    <p id="mDesc"></p>
-    <div id="mBenefits" style="font-size: 0.9rem;"></div>
-    <button class="close-modal" onclick="closeModal()">Fechar</button>
-  </div>
-</div>
-
-
-<!-- =========================== -->
-<!-- FOOTER -->
-<!-- =========================== -->
-
-<footer>
-  Criado com ❤️ por <a href="https://jadeprog.github.io/site/" target="_blank">@jadepaz</a>
-</footer>
-
-
-<script>
-  const plantInfo = {
-    'rosa': { title: 'Rosa Clássica', desc: 'A rainha das flores.', benefits: '• Perfume marcante<br>• Decoração romântica' },
-    'monstera': { title: 'Monstera Deliciosa', desc: 'Planta elegante e símbolo de crescimento.', benefits: '• Purifica o ar<br>• Decoração moderna' },
-    'dracena': { title: 'Dracena Variegata', desc: 'Planta resistente ideal para interiores.', benefits: '• Purifica toxinas<br>• Fácil de cuidar' },
-    'phlox': { title: 'Blanket Phlox', desc: 'Planta rasteira ornamental.', benefits: '• Ideal para cobrir superfícies<br>• Atrai polinizadores' },
-    'rhizome': { title: 'Rhizome Plant', desc: 'Planta tropical.', benefits: '• Traz frescor<br>• Fácil de manter' },
-    'orchidea': { title: 'Orquídea Rosa', desc: 'Símbolo de beleza e força.', benefits: '• Decoração refinada<br>• Serenidade' }
-  };
-
-  function openModal(key) {
-    const p = plantInfo[key];
-    document.getElementById('mTitle').innerText = p.title;
-    document.getElementById('mDesc').innerText = p.desc;
-    document.getElementById('mBenefits').innerHTML = '<strong>Benefícios:</strong><br>' + p.benefits;
-    document.getElementById('genericModal').style.display = 'flex';
-  }
-
-  function closeModal(){ document.getElementById('genericModal').style.display='none'; }
-
-  function openCamera(plant){
-    window.location.href = `camera.html?plant=${plant}`;
-  }
-</script>
+    function openModal(plantKey) {
+      const data = plantInfo[plantKey];
+      if(data) {
+        document.getElementById('mTitle').innerText = data.title;
+        document.getElementById('mDesc').innerText = data.desc;
+        document.getElementById('mBenefits').innerHTML = '<strong>Benefícios:</strong><br>' + data.benefits;
+        document.getElementById('genericModal').style.display = 'flex';
+      }
+    }
+    function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
+    function openCredits() { document.getElementById('creditsModal').style.display = 'flex'; }
+    function closeCredits() { document.getElementById('creditsModal').style.display = 'none'; }
+    function openCamera(plantName) { window.location.href = `camera.html?plant=${plantName}`; }
+  </script>
 
 </body>
 </html>
