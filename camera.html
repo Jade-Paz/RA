@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🌱 AR - Mão Estendida</title>
+  <title>🌱 AR - Rosa Segue a Mão</title>
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
@@ -12,17 +12,27 @@
 
   <style>
     body{ margin:0; overflow:hidden; background:#000; font-family:'Poppins',sans-serif; }
+    
     .media-container { position: fixed; inset: 0; z-index: 1; }
-    video, canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: none; }
+    
+    /* Câmera Traseira: Sem espelhamento */
+    video, canvas { 
+        position: absolute; inset: 0; width: 100%; height: 100%; 
+        object-fit: cover; transform: none; 
+    }
+    
     a-scene{ position:fixed; inset:0; z-index:2; pointer-events:none;}
     
+    /* Dica flutuante */
     .hint{ 
         position:fixed; bottom:80px; left:50%; transform:translateX(-50%); 
         background:rgba(0,0,0,.6); color:rgba(255,255,255,0.9); 
         padding:10px 20px; border-radius:30px; font-size:13px; z-index:10; 
-        text-align:center; pointer-events: none; backdrop-filter: blur(4px); width: 85%;
+        text-align:center; pointer-events: none;
+        backdrop-filter: blur(4px); width: 85%;
     }
 
+    /* Estilo Glass para Botões */
     .glass-btn {
         position: fixed; z-index: 100;
         display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -38,8 +48,14 @@
     .glass-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.3); }
 
     #backBtn { top: 20px; left: 20px; }
-    #pinBtn { bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(10, 103, 108, 0.6); }
-    #pinBtn.pinned { background: rgba(255, 71, 87, 0.6); border-color: rgba(255, 71, 87, 0.8); }
+    #pinBtn { 
+        bottom: 30px; left: 50%; transform: translateX(-50%); 
+        background: rgba(10, 103, 108, 0.6); 
+    }
+    #pinBtn.pinned {
+        background: rgba(255, 71, 87, 0.6); 
+        border-color: rgba(255, 71, 87, 0.8);
+    }
   </style>
 </head>
 <body>
@@ -53,19 +69,22 @@
   </div>
 
   <div class="hint" id="hintText">
-    Estenda a mão deitada (como se oferecesse algo) 🫴
+    Aponte a câmera traseira. A rosa seguirá sua mão!
   </div>
 
   <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     <a-entity id="cam" camera="near:0.01; far:100" position="0 0 0"></a-entity>
+    
     <a-entity id="arObject" position="0 0 -2" visible="false">
         <a-entity id="flower" gltf-model="assets/rosa.glb" scale="0 0 0" position="0 0 0"></a-entity>
     </a-entity>
+
     <a-entity light="type:ambient; intensity:1.5;"></a-entity>
     <a-entity light="type:directional; intensity:2;" position="1 4 3"></a-entity>
   </a-scene>
 
   <script>
+    // Elementos do DOM
     const videoElement = document.getElementById('inputVideo');
     const canvasElement = document.getElementById('outputCanvas');
     const canvasCtx = canvasElement.getContext('2d');
@@ -77,9 +96,9 @@
     let currentScale = 0;
     let isPinned = false; 
     let handDetected = false; 
-    let startX = 0;
 
-    // Interação Touch
+    // --- INTERAÇÃO TOUCH (Girar quando fixado) ---
+    let startX = 0;
     document.addEventListener('touchstart', (e) => { if(isPinned) startX = e.touches[0].clientX; });
     document.addEventListener('touchmove', (e) => {
         if (isPinned) {
@@ -89,49 +108,26 @@
         }
     });
 
+    // --- LÓGICA DO BOTÃO FIXAR ---
     pinBtn.addEventListener('click', () => {
-        const isVisible = arObject.getAttribute('visible');
-        if (!isVisible && !isPinned) { alert("Coloque a mão na posição correta!"); return; }
+        if (!handDetected && !isPinned) { alert("Mostre a mão primeiro!"); return; }
         isPinned = !isPinned; 
+        
         if (isPinned) {
-            pinBtn.innerText = "🔓 Soltar";
+            pinBtn.innerText = "🔓 Soltar Objeto";
             pinBtn.classList.add('pinned');
-            hintText.innerText = "Fixado! Pode mover o celular.";
+            hintText.innerText = "Fixado! Pode mover o celular ou girar a rosa com o dedo.";
         } else {
-            pinBtn.innerText = "📍 Fixar";
+            pinBtn.innerText = "📍 Fixar Posição";
             pinBtn.classList.remove('pinned');
-            hintText.innerText = "Estenda a mão deitada 🫴";
+            hintText.innerText = "Seguindo a mão... (👌 Pinça para tamanho)";
         }
     });
 
-    // --- NOVA LÓGICA DE DETECÇÃO (MÃO DEITADA) ---
-    function isHandFlatExtended(landmarks) {
-        // 1. Dedos devem estar abertos (não fechados em punho)
-        // Checamos se a ponta está mais longe do pulso do que a base
-        const fingersOpen = [8, 12, 16, 20].every(tip => {
-            const tipDist = Math.hypot(landmarks[tip].x - landmarks[0].x, landmarks[tip].y - landmarks[0].y);
-            const pipDist = Math.hypot(landmarks[tip-2].x - landmarks[0].x, landmarks[tip-2].y - landmarks[0].y);
-            return tipDist > pipDist;
-        });
-
-        // 2. A mão NÃO pode estar vertical (Posição de "Pare")
-        // No "Pare", a ponta do dedo médio (12) fica muito acima do pulso (0) no eixo Y.
-        // Diferença Y grande = Mão em pé. Diferença Y pequena = Mão deitada.
-        
-        const wristY = landmarks[0].y;
-        const middleTipY = landmarks[12].y;
-        
-        // Calculamos a diferença vertical
-        const verticalDiff = wristY - middleTipY; 
-
-        // Se a diferença for muito grande (ex: > 0.25), a mão está em pé.
-        // Se for menor, a mão está "deitada" (horizontal ou apontando pra câmera).
-        const isHandFlat = verticalDiff < 0.20; 
-
-        return fingersOpen && isHandFlat;
-    }
-
+    // --- MATEMÁTICA DA MÃO ---
     function getPalmCenter(landmarks) {
+        // Ponto médio entre Pulso (0) e Base do dedo médio (9)
+        // Isso garante que a rosa fique no CENTRO da palma
         return { 
             x: (landmarks[0].x + landmarks[9].x) / 2, 
             y: (landmarks[0].y + landmarks[9].y) / 2 
@@ -139,6 +135,7 @@
     }
 
     function getHandAperture(landmarks) {
+        // Distância Polegar (4) <-> Indicador (8)
         const dx = landmarks[4].x - landmarks[8].x;
         const dy = landmarks[4].y - landmarks[8].y;
         let scale = Math.max(0, (Math.sqrt(dx*dx + dy*dy) - 0.02) * 15); 
@@ -146,33 +143,40 @@
     }
 
     function updateAR(landmarks) {
+        // SE ESTIVER FIXADO: Não atualiza posição nem escala (fica parado no mundo)
         if (isPinned) return; 
 
-        // Usa a nova lógica de detecção
-        const poseIsCorrect = isHandFlatExtended(landmarks);
+        // SE NÃO ESTIVER FIXADO: Segue a mão
+        arObject.setAttribute('visible', true);
+        
+        // 1. Pega a posição da palma (0 a 1)
+        const center = getPalmCenter(landmarks);
+        
+        // 2. Converte para coordenadas da tela do A-Frame
+        // Sensibilidade X=2.2 garante que alcance os cantos da tela
+        const sensitivityX = 2.2; 
+        const sensitivityY = 1.6; // Y é um pouco menor pois a tela é wide em landscape
+        
+        const x = (center.x - 0.5) * sensitivityX;
+        const y = -(center.y - 0.5) * sensitivityY; // Inverte Y
+        
+        // 3. APLICA A POSIÇÃO (AQUI QUE A MÁGICA ACONTECE)
+        arObject.object3D.position.set(x, y, -2);
 
-        if (poseIsCorrect) {
-            arObject.setAttribute('visible', true);
-            
-            const center = getPalmCenter(landmarks);
-            const sensitivityX = 2.2; 
-            const sensitivityY = 1.6;
-            const x = (center.x - 0.5) * sensitivityX;
-            const y = -(center.y - 0.5) * sensitivityY;
-            arObject.object3D.position.set(x, y, -2);
-
-            const targetScale = getHandAperture(landmarks);
-            currentScale += (targetScale - currentScale) * 0.15; 
-            flower.object3D.scale.set(currentScale, currentScale, currentScale);
-        } else {
-            // Se a mão ficar vertical (Pare) ou fechar, some
-            arObject.setAttribute('visible', false);
-        }
+        // 4. Aplica a escala baseada na pinça
+        const targetScale = getHandAperture(landmarks);
+        // Suavização (Lerp) para a escala não ficar tremendo
+        currentScale += (targetScale - currentScale) * 0.15; 
+        flower.object3D.scale.set(currentScale, currentScale, currentScale);
     }
 
+    // --- MEDIAPIPE (VISÃO COMPUTACIONAL) ---
     const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
     hands.setOptions({
-      maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5
+      maxNumHands: 1, 
+      modelComplexity: 0, // Lite mode para celular
+      minDetectionConfidence: 0.5, 
+      minTrackingConfidence: 0.5
     });
 
     hands.onResults(results => {
@@ -184,22 +188,25 @@
         handDetected = true;
         const landmarks = results.multiHandLandmarks[0];
         
-        // Desenha esqueleto se não estiver fixado
+        // Desenha o esqueleto da mão (Verde/Vermelho) apenas se NÃO estiver fixado
         if (!isPinned) {
-            // Desenha verde se a pose estiver certa, cinza se estiver errada (feedback visual)
-            const isCorrect = isHandFlatExtended(landmarks);
-            const color = isCorrect ? '#00FF00' : '#AAAAAA';
-            
-            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: color, lineWidth: 2});
+            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
             drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1, radius: 3});
         }
+        
+        // Atualiza a posição da rosa
         updateAR(landmarks);
       } else {
         handDetected = false;
-        if (!isPinned) arObject.setAttribute('visible', false);
+        // Se a mão sumiu e NÃO está fixado, esconde a rosa
+        if (!isPinned) {
+            arObject.setAttribute('visible', false);
+            currentScale = 0;
+        }
       }
     });
 
+    // Inicia Câmera Traseira (environment)
     const camera = new Camera(videoElement, {
       onFrame: async () => { await hands.send({image: videoElement}); },
       width: 640, height: 480, facingMode: 'environment'
