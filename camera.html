@@ -12,6 +12,7 @@
 
   <style>
     body{ margin:0; overflow:hidden; background:#000; font-family:'Poppins',sans-serif; }
+    
     .media-container { position: fixed; inset: 0; z-index: 1; }
     
     video, canvas { 
@@ -21,16 +22,61 @@
     
     a-scene{ position:fixed; inset:0; z-index:2; pointer-events:none;}
     
-    /* Dica visível desde o início */
+    /* Dica inferior */
     .hint{ 
         position:fixed; bottom:30px; left:50%; transform:translateX(-50%); 
-        background:rgba(0,0,0,.7); color:#fff; padding:10px 20px; 
-        border-radius:30px; font-size:14px; z-index:10; 
+        background:rgba(0,0,0,.6); color:rgba(255,255,255,0.9); 
+        padding:10px 20px; border-radius:30px; font-size:13px; z-index:10; 
         text-align:center; pointer-events: none;
+        backdrop-filter: blur(4px); /* Leve efeito glass na dica também */
     }
+
+    /* --- BOTÃO LIQUID GLASS --- */
+    .glass-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 100; /* Fica acima de tudo */
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        padding: 10px 20px;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        font-size: 14px;
+        
+        /* O Efeito Vidro Líquido */
+        background: rgba(255, 255, 255, 0.1); /* Branco bem transparente */
+        backdrop-filter: blur(12px);          /* Desfoque do fundo */
+        -webkit-backdrop-filter: blur(12px);  /* Para funcionar no iPhone (Safari) */
+        border: 1px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);  /* Sombra suave */
+        
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+    .glass-btn:hover {
+        background: rgba(255, 255, 255, 0.25); /* Fica mais claro ao passar o mouse */
+        transform: scale(1.02);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .glass-btn:active {
+        transform: scale(0.95);
+    }
+
   </style>
 </head>
 <body>
+
+  <a href="modelos.html" class="glass-btn">
+    ← Voltar
+  </a>
 
   <div class="media-container">
     <video id="inputVideo" playsinline muted></video>
@@ -69,7 +115,6 @@
 
     let currentScale = 0;
 
-    // --- LÓGICA AR ---
     function getPalmCenter(landmarks) {
         const wrist = landmarks[0];
         const indexBase = landmarks[5];
@@ -101,7 +146,6 @@
         flower.object3D.scale.set(currentScale, currentScale, currentScale);
     }
 
-    // --- MEDIAPIPE ---
     const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
     hands.setOptions({
       maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5
@@ -123,16 +167,11 @@
       }
     });
 
-    // --- INICIALIZAÇÃO DIRETA (Igual AR.js) ---
-    // Removemos os botões e listeners. Iniciamos assim que o script carrega.
     const camera = new Camera(videoElement, {
       onFrame: async () => { await hands.send({image: videoElement}); },
       width: 640, height: 480
     });
-
-    // O navegador vai mostrar o popup "Permitir Câmera?" automaticamente aqui
     camera.start(); 
-
   </script>
 </body>
 </html>
