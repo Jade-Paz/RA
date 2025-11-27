@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🌱 AR - Câmera Traseira</title>
+  <title>🌱 AR - Interativo</title>
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
@@ -15,51 +15,60 @@
     
     .media-container { position: fixed; inset: 0; z-index: 1; }
     
+    /* Câmera traseira sem espelhamento */
     video, canvas { 
         position: absolute; inset: 0; width: 100%; height: 100%; 
-        object-fit: cover; 
-        /* ALTERAÇÃO CSS: Removi o scaleX(-1) para a câmera traseira não ficar espelhada */
-        transform: none; 
+        object-fit: cover; transform: none; 
     }
     
     a-scene{ position:fixed; inset:0; z-index:2; pointer-events:none;}
     
-    /* Dica inferior */
     .hint{ 
-        position:fixed; bottom:30px; left:50%; transform:translateX(-50%); 
+        position:fixed; bottom:80px; left:50%; transform:translateX(-50%); 
         background:rgba(0,0,0,.6); color:rgba(255,255,255,0.9); 
         padding:10px 20px; border-radius:30px; font-size:13px; z-index:10; 
         text-align:center; pointer-events: none;
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur(4px); width: 80%;
     }
 
-    /* --- BOTÃO LIQUID GLASS --- */
+    /* Botões Glass */
     .glass-btn {
-        position: fixed; top: 20px; left: 20px; z-index: 100;
+        position: fixed; z-index: 100;
         display: flex; align-items: center; justify-content: center; gap: 8px;
-        padding: 10px 20px; text-decoration: none;
-        color: rgba(255, 255, 255, 0.9); font-weight: 500; font-size: 14px;
-        background: rgba(255, 255, 255, 0.1); 
+        padding: 12px 24px; text-decoration: none;
+        color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 14px;
+        background: rgba(255, 255, 255, 0.15); 
         backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.2); 
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3); 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         border-radius: 50px; transition: all 0.3s ease;
+        cursor: pointer; user-select: none;
     }
-    .glass-btn:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.02); }
-    .glass-btn:active { transform: scale(0.95); }
+    .glass-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.3); }
+
+    #backBtn { top: 20px; left: 20px; }
+    #pinBtn { 
+        bottom: 30px; left: 50%; transform: translateX(-50%); 
+        background: rgba(10, 103, 108, 0.6); 
+    }
+    #pinBtn.pinned {
+        background: rgba(255, 71, 87, 0.6); 
+        border-color: rgba(255, 71, 87, 0.8);
+    }
   </style>
 </head>
 <body>
 
-  <a href="modelos.html" class="glass-btn">← Voltar</a>
+  <a href="modelos.html" id="backBtn" class="glass-btn">← Voltar</a>
+  <button id="pinBtn" class="glass-btn">📍 Fixar Posição</button>
 
   <div class="media-container">
     <video id="inputVideo" playsinline muted></video>
     <canvas id="outputCanvas"></canvas>
   </div>
 
-  <div class="hint">
-    Use a câmera traseira. Faça o gesto de pinça (👌) para controlar!
+  <div class="hint" id="hintText">
+    Faça o gesto de pinça (👌) e clique em Fixar.
   </div>
 
   <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
@@ -79,9 +88,59 @@
     const canvasCtx = canvasElement.getContext('2d');
     const arObject = document.getElementById('arObject');
     const flower = document.getElementById('flower');
+    const pinBtn = document.getElementById('pinBtn');
+    const hintText = document.getElementById('hintText');
 
     let currentScale = 0;
+    let isPinned = false; 
+    let handDetected = false; 
 
+    // --- LÓGICA DE INTERAÇÃO TOUCH (ROTAÇÃO) ---
+    let startX = 0;
+    
+    // Detecta quando o dedo toca na tela
+    document.addEventListener('touchstart', (e) => {
+        if(isPinned) {
+            startX = e.touches[0].clientX;
+        }
+    });
+
+    // Detecta quando o dedo arrasta
+    document.addEventListener('touchmove', (e) => {
+        if (isPinned) {
+            const currentX = e.touches[0].clientX;
+            const deltaX = currentX - startX;
+            
+            // Aplica rotação no Eixo Y (Girar horizontalmente)
+            // O valor 0.01 controla a velocidade da rotação
+            flower.object3D.rotation.y += deltaX * 0.01;
+            
+            startX = currentX;
+        }
+    });
+
+
+    // --- LÓGICA DO BOTÃO FIXAR ---
+    pinBtn.addEventListener('click', () => {
+        if (!handDetected && !isPinned) {
+            alert("Preciso ver sua mão primeiro!");
+            return;
+        }
+        isPinned = !isPinned; 
+
+        if (isPinned) {
+            pinBtn.innerText = "🔓 Soltar Objeto";
+            pinBtn.classList.add('pinned');
+            // Dica atualizada
+            hintText.innerText = "Fixado! Deslize o dedo na tela para girar ↔️";
+        } else {
+            pinBtn.innerText = "📍 Fixar Posição";
+            pinBtn.classList.remove('pinned');
+            hintText.innerText = "Rastreando mão... (👌 para tamanho)";
+        }
+    });
+
+    // --- FUNÇÕES MATEMÁTICAS ---
     function getPalmCenter(landmarks) {
         const wrist = landmarks[0];
         const indexBase = landmarks[5];
@@ -100,10 +159,11 @@
     }
 
     function updateAR(landmarks) {
+        if (isPinned) return; 
+
         arObject.setAttribute('visible', true);
         const center = getPalmCenter(landmarks);
         
-        // Ajuste de sensibilidade
         const sensitivityX = 2.5; const sensitivityY = 1.5;
         const x = (center.x - 0.5) * sensitivityX;
         const y = -(center.y - 0.5) * sensitivityY;
@@ -114,12 +174,10 @@
         flower.object3D.scale.set(currentScale, currentScale, currentScale);
     }
 
+    // --- MEDIAPIPE ---
     const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
     hands.setOptions({
-      maxNumHands: 1, 
-      modelComplexity: 0, 
-      minDetectionConfidence: 0.5, 
-      minTrackingConfidence: 0.5
+      maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5
     });
 
     hands.onResults(results => {
@@ -128,25 +186,27 @@
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
       
       if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        handDetected = true;
         const landmarks = results.multiHandLandmarks[0];
-        drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
-        drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1, radius: 3});
+        
+        if (!isPinned) {
+            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
+            drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1, radius: 3});
+        }
         updateAR(landmarks);
       } else {
-        arObject.setAttribute('visible', false);
-        currentScale = 0;
+        handDetected = false;
+        if (!isPinned) {
+            arObject.setAttribute('visible', false);
+            currentScale = 0;
+        }
       }
     });
 
-    // --- CONFIGURAÇÃO DA CÂMERA TRASEIRA ---
     const camera = new Camera(videoElement, {
       onFrame: async () => { await hands.send({image: videoElement}); },
-      width: 640, 
-      height: 480,
-      facingMode: 'environment' // <--- ISSO FORÇA A CÂMERA TRASEIRA
+      width: 640, height: 480, facingMode: 'environment'
     });
-    
-    // Inicia e pede permissão automaticamente
     camera.start(); 
   </script>
 </body>
