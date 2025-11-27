@@ -3,115 +3,134 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🌱 AR + Visualização (Debug)</title>
+  <title>🌱 AR - Rosa Controlada pela Mão</title>
 
-  <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
-  <!-- MediaPipe -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.min.js"></script>
 
   <style>
-    :root { --bg:#222; --text:#ffffff; }
-    body{ margin:0; overflow:hidden; font-family:'Poppins',sans-serif; background:var(--bg); }
+    body{ margin:0; overflow:hidden; background:#000; }
     .media-container { position: fixed; inset: 0; z-index: 1; }
-    video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-    canvas.output_canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); pointer-events:none; }
+    
+    /* Espelhar vídeo e canvas para parecer um espelho */
+    video, canvas { 
+        position: absolute; inset: 0; width: 100%; height: 100%; 
+        object-fit: cover; transform: scaleX(-1); 
+    }
+    
     a-scene{ position:fixed; inset:0; z-index:2; pointer-events:none;}
-    .hint{ position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,.7); color:#fff; padding:10px 20px; border-radius:30px; font-size:14px; z-index:10; text-align:center; }
-    .status { font-size: 10px; color: #aaa; margin-top: 4px; }
+    
+    .hint{ 
+        position:fixed; bottom:30px; left:50%; transform:translateX(-50%); 
+        background:rgba(0,0,0,.7); color:#fff; padding:10px 20px; 
+        border-radius:30px; font-family: sans-serif; font-size:14px; z-index:10; 
+        text-align:center; 
+    }
   </style>
 </head>
 <body>
 
   <div class="media-container">
     <video id="inputVideo" autoplay playsinline muted></video>
-    <canvas id="outputCanvas" class="output_canvas"></canvas>
+    <canvas id="outputCanvas"></canvas>
   </div>
 
   <div class="hint">
-    Mostre a mão para ver o esqueleto e a rosa 🌹
-    <div class="status" id="statusText">Carregando cena...</div>
+    Abra e feche a mão (Polegar e Indicador) para mudar o tamanho da rosa! 👌
   </div>
 
-  <!-- CENA AR -->
   <a-scene embedded vr-mode-ui="enabled:false">
-    <!-- Camera com near pequeno para não clippar o objeto próximo -->
-    <a-entity id="cam" camera="near:0.01; far:100" position="0 1.6 0"></a-entity>
+    <a-entity id="cam" camera="near:0.01; far:100" position="0 0 0"></a-entity>
     
-    <!-- Rosa: invisível até a mão aparecer -->
-    <a-entity id="flower"
-      gltf-model="assets/rosa.glb"
-      position="0 0 0"
-      scale="0 0 0"
-      visible="false"
-      animation__grow="property: scale; to: 5 5 5; dur: 600; easing: easeOutBack; startEvents: grow"
-      animation__shrink="property: scale; to: 0 0 0; dur: 400; easing: easeIn; startEvents: shrink">
-    </a-entity>
+    <a-entity id="arObject" position="0 0 -2" visible="false">
+        
+        <a-entity id="flower"
+          gltf-model="assets/rosa.glb"
+          scale="0 0 0"
+          position="0 -0.5 0">
+        </a-entity>
 
-    <a-entity light="type:ambient; intensity:1.2;"></a-entity>
-    <a-entity light="type:directional; intensity:1.5;" position="1 4 3"></a-entity>
+        </a-entity>
+
+    <a-entity light="type:ambient; intensity:1.5;"></a-entity>
+    <a-entity light="type:directional; intensity:2;" position="1 4 3"></a-entity>
   </a-scene>
 
   <script>
-    const videoEl = document.getElementById('inputVideo');
-    const canvasEl = document.getElementById('outputCanvas');
-    const ctx = canvasEl.getContext('2d');
-    const statusText = document.getElementById('statusText');
+    const videoElement = document.getElementById('inputVideo');
+    const canvasElement = document.getElementById('outputCanvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    
+    const arObject = document.getElementById('arObject');
+    const flower = document.getElementById('flower');
 
-    const modelEl = document.getElementById('flower');
-    const camEl = document.getElementById('cam');
+    // Variável para suavizar o movimento de escala (evitar tremedeira)
+    let currentScale = 0;
 
-    let isHandVisible = false;
-    let mpCamera = null;
-    let modelReady = false;   // <- garante que o GLB carregou
-
-    // Debug de carga do modelo
-    modelEl.addEventListener('model-loaded', () => {
-      modelReady = true;
-      console.log('✅ GLB carregado');
-    });
-    modelEl.addEventListener('model-error', (e) => {
-      console.error('❌ Erro ao carregar GLB', e);
-      statusText.innerText = "Erro ao carregar a rosa (ver console)";
-    });
-
-    // --------- Lógica AR (mostrar/posicionar rosa) ----------
-    function updateAR(landmarks) {
-      const isIndexUp = landmarks[8].y < landmarks[5].y;
-      const showFlower = isIndexUp;
-
-      if (showFlower && !isHandVisible && modelReady) {
-        modelEl.setAttribute('visible', true);
-        modelEl.emit('grow');
-        isHandVisible = true;
-      } else if (!showFlower && isHandVisible) {
-        modelEl.emit('shrink');
-        isHandVisible = false;
-        setTimeout(() => modelEl.setAttribute('visible', false), 380);
-      }
-
-      if (!isHandVisible) return;
-
-      // Posicionar a 0.8 m na direção da palma
-      const palm = landmarks[9];
-      const cam3D = camEl.getObject3D('camera');
-      if (!cam3D) return;
-
-      const ndc = new THREE.Vector3(palm.x * 2 - 1, -(palm.y * 2 - 1), 0.5);
-      ndc.unproject(cam3D);
-      const dir = ndc.sub(cam3D.position).normalize();
-      const pos = cam3D.position.clone().add(dir.multiplyScalar(0.8)); // 0.8 m
-
-      modelEl.object3D.position.copy(pos);
+    // --- 1. CÁLCULO DO CENTRO DA PALMA ---
+    function getPalmCenter(landmarks) {
+        const wrist = landmarks[0];
+        const indexBase = landmarks[5];
+        const pinkyBase = landmarks[17];
+        return { 
+            x: (wrist.x + indexBase.x + pinkyBase.x) / 3, 
+            y: (wrist.y + indexBase.y + pinkyBase.y) / 3 
+        };
     }
 
-    // --------- MediaPipe Hands ----------
-    const hands = new Hands({
-      locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
-    });
+    // --- 2. CÁLCULO DA ABERTURA DA MÃO ---
+    function getHandAperture(landmarks) {
+        // Distância entre a ponta do Polegar (4) e a ponta do Indicador (8)
+        const dx = landmarks[4].x - landmarks[8].x;
+        const dy = landmarks[4].y - landmarks[8].y;
+        const distance = Math.sqrt(dx*dx + dy*dy);
+        
+        // Normaliza a distância. 
+        // 0.02 é "fechado" (dedos encostados)
+        // 0.25 é "muito aberto"
+        // Retornamos um valor para escala, por exemplo, multiplicando por 20
+        
+        // Limita o valor mínimo para a rosa não sumir completamente ou ficar negativa
+        let scale = Math.max(0, (distance - 0.02) * 15); 
+        
+        // Limita o tamanho máximo (ex: 5x o tamanho original)
+        scale = Math.min(scale, 5); 
+
+        return scale;
+    }
+
+    function updateAR(landmarks) {
+        // Se a mão for detectada, mostramos o objeto
+        arObject.setAttribute('visible', true);
+
+        // --- A. POSICIONAMENTO ---
+        const center = getPalmCenter(landmarks);
+        
+        // Mapeamento Direto (Como fizemos antes para fixar a rosa)
+        const sensitivityX = 2.5; 
+        const sensitivityY = 1.5;
+        const x = (center.x - 0.5) * sensitivityX;
+        const y = -(center.y - 0.5) * sensitivityY;
+        
+        // Aplica posição
+        arObject.object3D.position.set(x, y, -2);
+
+        // --- B. ESCALA DINÂMICA (Abre/Fecha) ---
+        const targetScale = getHandAperture(landmarks);
+        
+        // Suavização (Lerp): A escala atual vai 10% em direção à escala alvo a cada frame
+        // Isso faz o movimento ficar macio em vez de robótico
+        currentScale += (targetScale - currentScale) * 0.1;
+
+        // Aplica a escala nos 3 eixos (X, Y, Z)
+        flower.object3D.scale.set(currentScale, currentScale, currentScale);
+    }
+
+    // --- SETUP MEDIAPIPE ---
+    const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
     hands.setOptions({
       maxNumHands: 1,
       modelComplexity: 1,
@@ -119,54 +138,45 @@
       minTrackingConfidence: 0.5
     });
 
-    hands.onResults(onResults);
+    hands.onResults(results => {
+      canvasElement.width = videoElement.videoWidth;
+      canvasElement.height = videoElement.videoHeight;
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const landmarks = results.multiHandLandmarks[0];
+        
+        // Desenha linhas verdes e pontos vermelhos
+        drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
+        drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 1, radius: 3});
+        
+        // Desenha uma linha amarela entre polegar e indicador para você ver o "controle"
+        const p1 = landmarks[4]; // Polegar
+        const p2 = landmarks[8]; // Indicador
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(p1.x * canvasElement.width, p1.y * canvasElement.height);
+        canvasCtx.lineTo(p2.x * canvasElement.width, p2.y * canvasElement.height);
+        canvasCtx.strokeStyle = "yellow";
+        canvasCtx.lineWidth = 4;
+        canvasCtx.stroke();
 
-    function onResults(results) {
-      canvasEl.width = videoEl.videoWidth || 640;
-      canvasEl.height = videoEl.videoHeight || 480;
-
-      ctx.save();
-      ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-
-      if (results.multiHandLandmarks && results.multiHandLandmarks.length) {
-        statusText.innerText = "Mão detectada!";
-        const lm = results.multiHandLandmarks[0];
-
-        // Visual debug
-        drawConnectors(ctx, lm, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
-        drawLandmarks(ctx, lm, { color: '#FF0000', lineWidth: 2, radius: 4 });
-
-        updateAR(lm);
+        updateAR(landmarks);
       } else {
-        statusText.innerText = "Procurando mão...";
-        if (isHandVisible) {
-          modelEl.emit('shrink');
-          isHandVisible = false;
-          setTimeout(() => modelEl.setAttribute('visible', false), 380);
-        }
+        // Se a mão sumir, esconde o objeto
+        arObject.setAttribute('visible', false);
+        currentScale = 0; // Reseta escala
       }
-      ctx.restore();
-    }
-
-    // --------- Inicialização coordenada (A-Frame -> MediaPipe) ----------
-    document.querySelector('a-scene').addEventListener('loaded', () => {
-      statusText.innerText = "Cena pronta. Iniciando câmera...";
-      startMediaPipeCamera();
     });
 
-    function startMediaPipeCamera() {
-      if (mpCamera) return;
-      mpCamera = new Camera(videoEl, {
-        onFrame: async () => { await hands.send({ image: videoEl }); },
-        width: 640,
-        height: 480
-      });
-      mpCamera.start();
-      statusText.innerText = "Mostre a mão para ver o esqueleto e a rosa 🌹";
-    }
+    const camera = new Camera(videoElement, {
+      onFrame: async () => { await hands.send({image: videoElement}); },
+      width: 640, height: 480
+    });
+    camera.start();
   </script>
 </body>
 </html>
+
 
 
 
