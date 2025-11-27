@@ -15,8 +15,8 @@
   <button id="backBtn" class="nav-btn" onclick="window.location.href='index.html'">← Voltar</button>
 
   <header>
-    <h1>Jardim Virtual 🌿</h1>
-    <p class="subtitle">Deslize para escolher sua planta</p>
+    <h1>Modelos 3D</h1>
+    <p class="subtitle">Deslize para escolher seu modelo</p>
   </header>
 
   <!-- ==================== -->
@@ -114,6 +114,27 @@
   <!-- ==================== -->
   <div class="category-title">Flores & Ornamentais</div>
   <div class="carousel-container">
+    
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer 
+          src="assets/rosa.glb" 
+          auto-rotate 
+          camera-controls 
+          disable-zoom
+          ar 
+          ar-modes="scene-viewer webxr quick-look"
+          ar-scale="fixed">
+        </model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Rosa Clássica</div>
+        <div class="card-desc">Símbolo de amor e elegância.</div>
+        <div class="btn-row">
+          <button class="btn-details" onclick="openModal('rosa')">Detalhes</button>
+        </div>
+      </div>
+    </div>
 
     <div class="plant-card">
       <div class="model-preview">
@@ -180,8 +201,75 @@
 
   </div>
 
-  <!-- Tutoriais, Créditos e Scripts (mantidos iguais) -->
-  <!-- ... resto do seu código original ... -->
+  <!-- ==================== -->
+  <!-- TUTORIAIS & INFO -->
+  <!-- ==================== -->
+  <div class="section-title">✨ Tutoriais & Info</div>
+  <div class="stories-container">
+    
+    <div class="story-item" onclick="showTip('Como Usar', 'Vá até a seção Experiência AR e toque em <strong>Testar Agora ✨</strong>. Nos demais cards, use o botão AR nativo do visor.')">
+      <div class="story-circle"><img src="https://cdn-icons-png.flaticon.com/512/2659/2659360.png" alt="Tutorial"></div>
+      <span class="story-text">Como Usar</span>
+    </div>
+    
+    <div class="story-item" onclick="showTip('Controles', 'Use o gesto de pinça (👌) no AR nativo para <em>scale</em>. Na experiência da Borboleta Azul, a escala responde ao abrir/fechar da mão.')">
+      <div class="story-circle"><img src="https://cdn-icons-png.flaticon.com/512/5695/5695669.png" alt="Controle"></div>
+      <span class="story-text">Controles</span>
+    </div>
+    
+    <div class="story-item" onclick="openCredits()">
+      <div class="story-circle" style="border-color: #ffc107;">
+        <img src="https://cdn-icons-png.flaticon.com/512/15466/15466060.png" alt="Créditos">
+      </div>
+      <span class="story-text">Créditos</span>
+    </div>
+
+  </div>
+
+  <!-- ==================== -->
+  <!-- MODAIS GENÉRICOS -->
+  <!-- ==================== -->
+  <div id="genericModal" class="modal-overlay">
+    <div class="details-box">
+      <h3 id="mTitle"></h3>
+      <p id="mDesc"></p>
+      <div id="mBenefits" style="margin-top:10px;color:#555;font-size:0.9rem;"></div>
+      <button class="close-modal" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+
+  <div id="tipsModal" class="modal-overlay">
+    <div class="details-box">
+      <h3 id="tTitle"></h3>
+      <p id="tContent"></p>
+      <button class="close-modal" onclick="closeTips()">Fechar</button>
+    </div>
+  </div>
+
+  <!-- ==================== -->
+  <!-- MODAL CRÉDITOS -->
+  <!-- ==================== -->
+  <div id="creditsModal" class="modal-overlay">
+    <div class="details-box">
+      <h3>Créditos dos Modelos 3D</h3>
+      <ul style="list-style:none;padding-left:0; font-size:0.9rem; color:#555;">
+        <li>🌿 <strong>Monstera Deliciosa</strong> – <a href="https://sketchfab.com/3d-models/monstera-deliciosa-potted-mid-century-plant-1ab9bf841df04c07b1819be596327629" target="_blank">Giora</a></li>
+        <li>🌱 <strong>Dracena Variegata</strong> – <a href="https://sketchfab.com/3d-models/indoor-plant-7c5e77d572c848458e5d898ac49f6f27" target="_blank">Malek Almsri</a></li>
+        <li>🌾 <strong>Rhizome Plant</strong> – <a href="https://sketchfab.com/3d-models/rhyzome-plant-7191a1b935ac452987866573713e4da5" target="_blank">Blizzy</a></li>
+        <li>💮 <strong>Orchidea</strong> – <a href="https://sketchfab.com/antoniorossini" target="_blank">Antonio Rossini</a></li>
+        <li>🦋 <strong>Borboleta Azul</strong> – <a href="https://sketchfab.com/3d-models/ulysses-butterfly-1155effb97564974aa0553db3d5eed57" target="_blank">Ulysses Butterfly</a></li>
+      </ul>
+      <p><strong>Criado por Jade Paz 👩‍💻</strong><br>
+      <small>Desenvolvedora Full Stack & AR</small></p>
+      <a href="https://jadeprog.github.io/site/?utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank">🌐 Portfólio</a>
+      <br><br>
+      <button class="close-modal" onclick="closeCredits()">Fechar</button>
+    </div>
+  </div>
+
+  <footer>
+    Criado com ❤️ por <a href="https://jadeprog.github.io/site/?utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank">@jadepaz</a>
+  </footer>
 
   <script>
     const plantInfo = {
@@ -196,14 +284,21 @@
 
     function openModal(plantKey) {
       const data = plantInfo[plantKey];
-      if(data) {
+      if (data) {
         document.getElementById('mTitle').innerText = data.title;
         document.getElementById('mDesc').innerText = data.desc;
         document.getElementById('mBenefits').innerHTML = '<strong>Benefícios:</strong><br>' + data.benefits;
         document.getElementById('genericModal').style.display = 'flex';
       }
     }
+
     function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
+    function showTip(title, html) {
+      document.getElementById('tTitle').innerText = title;
+      document.getElementById('tContent').innerHTML = html;
+      document.getElementById('tipsModal').style.display = 'flex';
+    }
+    function closeTips() { document.getElementById('tipsModal').style.display = 'none'; }
     function openCredits() { document.getElementById('creditsModal').style.display = 'flex'; }
     function closeCredits() { document.getElementById('creditsModal').style.display = 'none'; }
     function openCamera(plantName) { window.location.href = `camera.html?plant=${plantName}`; }
