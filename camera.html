@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🌱 AR - Rosa Estável</title>
+  <title>🌱 AR - Controle Total</title>
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
@@ -18,7 +18,7 @@
     video, canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: none; }
     a-scene{ position:fixed; inset:0; z-index:2; pointer-events:none;}
     
-    /* --- ESTILO VIDRO --- */
+    /* --- ESTILOS VISUAIS --- */
     .hint { 
         position: fixed; bottom: 140px; left: 50%; transform: translateX(-50%); 
         padding: 12px 24px; border-radius: 30px; 
@@ -48,22 +48,42 @@
     .glass-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.2); }
 
     #backBtn { top: 20px; left: 20px; }
-    #pinBtn { bottom: 30px; left: 50%; transform: translateX(-50%); width: max-content; }
+    
+    #pinBtn { 
+        bottom: 30px; left: 50%; transform: translateX(-50%); 
+        width: max-content;
+    }
     #pinBtn.pinned {
         background: rgba(255, 50, 50, 0.25); border-color: rgba(255, 100, 100, 0.6);
         box-shadow: 0 0 15px rgba(255, 50, 50, 0.3);
     }
 
-    /* --- CONTROLE DE VELOCIDADE (SLIDER) --- */
-    #speedControl {
-        display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-        z-index: 100; width: 80%; max-width: 300px;
-        background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
+    /* --- CONTROLE DE VELOCIDADE + PAUSE --- */
+    #controlsContainer {
+        display: none; /* Começa escondido */
+        position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+        z-index: 100;
+        width: 90%; max-width: 350px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
         padding: 15px 20px; border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        flex-direction: column; align-items: center; gap: 5px;
+        
+        display: flex; /* Flexbox para alinhar botão e slider */
+        align-items: center; gap: 15px;
         color: white; font-size: 12px; font-weight: bold;
     }
+
+    /* Botão de Pause Pequeno */
+    #pauseBtn {
+        background: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 50%; width: 40px; height: 40px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; cursor: pointer;
+    }
+
+    .slider-wrapper { flex-grow: 1; display: flex; flex-direction: column; gap: 5px; }
     
     input[type=range] { width: 100%; -webkit-appearance: none; appearance: none; background: transparent; }
     input[type=range]::-webkit-slider-thumb {
@@ -83,13 +103,16 @@
   
   <button id="pinBtn" class="glass-btn">📍 Fixar Posição</button>
 
-  <div id="speedControl">
-      <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;">
-          <span>Lento 🐢</span>
-          <span>Velocidade</span>
-          <span>Rápido 🐇</span>
+  <div id="controlsContainer" style="display: none;">
+      <button id="pauseBtn">⏸️</button>
+      
+      <div class="slider-wrapper">
+          <div style="display:flex; justify-content:space-between; width:100%;">
+              <span>Lento</span>
+              <span>Rápido</span>
+          </div>
+          <input type="range" id="animSpeed" min="0.1" max="3.0" step="0.1" value="1">
       </div>
-      <input type="range" id="animSpeed" min="0.1" max="3.0" step="0.1" value="1">
   </div>
 
   <div class="media-container">
@@ -109,7 +132,7 @@
                   gltf-model="assets/rosa.glb" 
                   scale="0 0 0" 
                   position="0 0 0"
-                  rotation="50 00 0" 
+                  rotation="50 0 0" 
                   animation-mixer="clip: *; loop: repeat; timeScale: 1">
         </a-entity>
     </a-entity>
@@ -128,20 +151,37 @@
     const hintText = document.getElementById('hintText');
     const camEl = document.getElementById('cam');
     
-    const speedControlDiv = document.getElementById('speedControl');
+    // Controles UI
+    const controlsContainer = document.getElementById('controlsContainer');
     const speedSlider = document.getElementById('animSpeed');
+    const pauseBtn = document.getElementById('pauseBtn');
 
     let currentPos = new THREE.Vector3(0, 0, -2);
     let currentScale = 0;
-    // let currentRotationZ = 0; // Removido
     let isPinned = false; 
     let handDetected = false; 
     let startX = 0;
+    let isPaused = false;
 
-    // --- SLIDER ---
+    // --- LÓGICA PAUSE / PLAY ---
+    pauseBtn.addEventListener('click', () => {
+        isPaused = !isPaused; // Inverte estado
+        if (isPaused) {
+            pauseBtn.innerText = "▶️";
+            flower.setAttribute('animation-mixer', 'timeScale', 0); // Para animação
+        } else {
+            pauseBtn.innerText = "⏸️";
+            // Restaura velocidade do slider
+            flower.setAttribute('animation-mixer', 'timeScale', speedSlider.value);
+        }
+    });
+
+    // --- LÓGICA SLIDER ---
     speedSlider.addEventListener('input', (e) => {
-        const speed = e.target.value;
-        flower.setAttribute('animation-mixer', 'timeScale', speed);
+        // Se estiver pausado, não muda a velocidade agora (muda só quando der play)
+        if (!isPaused) {
+            flower.setAttribute('animation-mixer', 'timeScale', e.target.value);
+        }
     });
 
     // --- TOUCH ---
@@ -157,18 +197,19 @@
     pinBtn.addEventListener('click', () => {
         const isVisible = arObject.getAttribute('visible');
         if (!isVisible && !isPinned) { alert("Mostre a mão primeiro!"); return; }
+        
         isPinned = !isPinned; 
+        
         if (isPinned) {
             pinBtn.innerText = "🔓 Soltar";
             pinBtn.classList.add('pinned');
             hintText.style.display = 'none'; 
-            speedControlDiv.style.display = 'flex';
+            controlsContainer.style.display = 'flex'; // Mostra controles
         } else {
             pinBtn.innerText = "📍 Fixar";
             pinBtn.classList.remove('pinned');
             hintText.style.display = 'block';
-            hintText.innerText = "Seguindo o centro da palma...";
-            speedControlDiv.style.display = 'none';
+            controlsContainer.style.display = 'none'; // Esconde controles
         }
     });
 
@@ -177,17 +218,13 @@
         const p0 = landmarks[0];
         const p5 = landmarks[5];
         const p17 = landmarks[17];
-        return { 
-            x: (p0.x + p5.x + p17.x) / 3, 
-            y: (p0.y + p5.y + p17.y) / 3 
-        };
+        return { x: (p0.x + p5.x + p17.x) / 3, y: (p0.y + p5.y + p17.y) / 3 };
     }
 
     function getHandAperture(landmarks) {
         const dx = landmarks[4].x - landmarks[8].x;
         const dy = landmarks[4].y - landmarks[8].y;
-        let rawDistance = Math.sqrt(dx*dx + dy*dy);
-        let scale = Math.max(0, (rawDistance - 0.02) * 15); 
+        let scale = Math.max(0, (Math.sqrt(dx*dx + dy*dy) - 0.02) * 15); 
         return Math.min(scale, 0.8); 
     }
 
@@ -195,7 +232,6 @@
         if (isPinned) return; 
 
         arObject.setAttribute('visible', true);
-        
         const center = getTriangleCenter(landmarks);
         const threeCamera = camEl.getObject3D('camera');
         const ndcX = (center.x * 2) - 1;
@@ -212,15 +248,10 @@
         const targetScale = getHandAperture(landmarks);
         currentScale += (targetScale - currentScale) * 0.15; 
         flower.object3D.scale.set(currentScale, currentScale, currentScale);
-
-        // A ROTAÇÃO Z FOI REMOVIDA DAQUI
-        // flower.object3D.rotation.z = ... (Removido)
     }
 
     const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
-    hands.setOptions({
-      maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5
-    });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
 
     hands.onResults(results => {
       canvasElement.width = videoElement.videoWidth;
@@ -238,18 +269,13 @@
                 canvasCtx.beginPath(); canvasCtx.arc(p.x * canvasElement.width, p.y * canvasElement.height, 3, 0, 2 * Math.PI); canvasCtx.fill();
             });
             const center = getTriangleCenter(landmarks);
-            canvasCtx.beginPath();
-            canvasCtx.arc(center.x * canvasElement.width, center.y * canvasElement.height, 4, 0, 2 * Math.PI);
-            canvasCtx.fillStyle = "rgba(255, 255, 0, 0.5)";
-            canvasCtx.fill();
+            canvasCtx.beginPath(); canvasCtx.arc(center.x * canvasElement.width, center.y * canvasElement.height, 4, 0, 2 * Math.PI);
+            canvasCtx.fillStyle = "rgba(255, 255, 0, 0.5)"; canvasCtx.fill();
         }
         updateAR(landmarks);
       } else {
         handDetected = false;
-        if (!isPinned) {
-            arObject.setAttribute('visible', false);
-            currentScale = 0;
-        }
+        if (!isPinned) { arObject.setAttribute('visible', false); currentScale = 0; }
       }
     });
 
