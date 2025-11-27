@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🌱 AR - Rosa na Palma da Mão</title>
+  <title>🌱 AR - Rosa Centralizada</title>
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
@@ -13,7 +13,6 @@
   <style>
     body{ margin:0; overflow:hidden; background:#000; font-family:'Poppins',sans-serif; }
     .media-container { position: fixed; inset: 0; z-index: 1; }
-    /* Câmera Traseira: Sem espelhamento */
     video, canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: none; }
     a-scene{ position:fixed; inset:0; z-index:2; pointer-events:none;}
     
@@ -24,13 +23,17 @@
         text-align:center; pointer-events: none; backdrop-filter: blur(4px); width: 85%;
     }
 
-    /* Estilo Glass para Botões */
     .glass-btn {
-        position: fixed; z-index: 100; display: flex; align-items: center; justify-content: center; gap: 8px;
-        padding: 12px 24px; text-decoration: none; color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 14px;
-        background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        border-radius: 50px; transition: all 0.3s ease; cursor: pointer; user-select: none;
+        position: fixed; z-index: 100;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        padding: 12px 24px; text-decoration: none;
+        color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 14px;
+        background: rgba(255, 255, 255, 0.15); 
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3); 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border-radius: 50px; transition: all 0.3s ease;
+        cursor: pointer; user-select: none;
     }
     .glass-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.3); }
 
@@ -50,11 +53,11 @@
   </div>
 
   <div class="hint" id="hintText">
-    Aponte a câmera traseira. A rosa nascerá na sua palma!
+    Aponte a câmera traseira. A rosa nascerá no centro da palma!
   </div>
 
   <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-    <a-entity id="cam" camera="near:0.01; far:100" position="0 0 0"></a-entity>
+    <a-entity id="cam" camera="near:0.01; far:100; fov: 70" position="0 0 0"></a-entity>
     
     <a-entity id="arObject" position="0 0 -2" visible="false">
         <a-entity id="flower" gltf-model="assets/rosa.glb" scale="0 0 0" position="0 0 0"></a-entity>
@@ -72,9 +75,10 @@
     const flower = document.getElementById('flower');
     const pinBtn = document.getElementById('pinBtn');
     const hintText = document.getElementById('hintText');
+    const camEl = document.getElementById('cam');
 
-    // Variáveis para suavização (Smoothing) para evitar tremedeira
-    let currentPos = { x: 0, y: 0 };
+    // Variáveis de suavização
+    let currentPos = new THREE.Vector3(0, 0, -2);
     let currentScale = 0;
     let currentRotationZ = 0;
     
@@ -92,37 +96,36 @@
         }
     });
 
-    // --- BOTÃO FIXAR ---
     pinBtn.addEventListener('click', () => {
         const isVisible = arObject.getAttribute('visible');
         if (!isVisible && !isPinned) { alert("Mostre a mão primeiro!"); return; }
         isPinned = !isPinned; 
         if (isPinned) {
-            pinBtn.innerText = "🔓 Soltar Objeto";
+            pinBtn.innerText = "🔓 Soltar";
             pinBtn.classList.add('pinned');
             hintText.innerText = "Fixado! Pode mover o celular.";
         } else {
-            pinBtn.innerText = "📍 Fixar Posição";
+            pinBtn.innerText = "📍 Fixar";
             pinBtn.classList.remove('pinned');
-            hintText.innerText = "Seguindo a palma da mão...";
+            hintText.innerText = "Seguindo o centro da palma...";
         }
     });
 
-    // --- CÁLCULO DE CENTRO PRECISO (TRIÂNGULO DA PALMA) ---
-    function getStablePalmCenter(landmarks) {
-        // Usa o triângulo rígido da mão: Pulso (0), Indicador (5) e Mindinho (17)
+    // --- CÁLCULO EXATO DO CENTRO DO TRIÂNGULO (CENTROIDE) ---
+    function getTriangleCenter(landmarks) {
+        // Pega os 3 pontos: Pulso (0), Base Indicador (5), Base Mindinho (17)
         const p0 = landmarks[0];
         const p5 = landmarks[5];
         const p17 = landmarks[17];
 
-        // A média desses três pontos é o centro geográfico da palma
+        // Média aritmética simples para achar o centroide
         return { 
             x: (p0.x + p5.x + p17.x) / 3, 
             y: (p0.y + p5.y + p17.y) / 3 
         };
     }
 
-    // Calcula a inclinação da mão (rotação Z)
+    // Calcula inclinação da mão
     function getHandRotation(landmarks) {
         const p0 = landmarks[0];
         const p9 = landmarks[9];
@@ -144,32 +147,40 @@
 
         arObject.setAttribute('visible', true);
         
-        // 1. Obtém o centro preciso
-        const center = getStablePalmCenter(landmarks);
+        // 1. Pega o centro do triângulo (0 a 1)
+        const center = getTriangleCenter(landmarks);
         
-        // 2. Mapeia para a tela com sensibilidade ajustada
-        const sensitivityX = 2.2; 
-        const sensitivityY = 1.6;
-        const targetX = (center.x - 0.5) * sensitivityX;
-        const targetY = -(center.y - 0.5) * sensitivityY;
+        // 2. PROJEÇÃO 3D PRECISA (UNPROJECT)
+        // Converte coordenadas 2D do MediaPipe para coordenadas 3D do mundo A-Frame
+        const threeCamera = camEl.getObject3D('camera');
+        
+        // Normaliza para o espaço de dispositivo (-1 a +1)
+        // X: 0..1 -> -1..1
+        // Y: 0..1 -> 1..-1 (Invertido)
+        const ndcX = (center.x * 2) - 1;
+        const ndcY = -(center.y * 2) + 1;
+        
+        const vector = new THREE.Vector3(ndcX, ndcY, 0.5); // 0.5 é profundidade normalizada
+        vector.unproject(threeCamera);
+        
+        const dir = vector.sub(threeCamera.position).normalize();
+        const distance = 2; // Distância fixa da câmera (em metros)
+        const targetPos = threeCamera.position.clone().add(dir.multiplyScalar(distance));
 
-        // 3. Suavização de Posição (Lerp) - Essencial para parecer "colado"
-        currentPos.x += (targetX - currentPos.x) * 0.2;
-        currentPos.y += (targetY - currentPos.y) * 0.2;
-        arObject.object3D.position.set(currentPos.x, currentPos.y, -2);
+        // 3. Suavização (Lerp)
+        currentPos.lerp(targetPos, 0.2); // Move 20% em direção ao alvo
+        arObject.object3D.position.copy(currentPos);
 
-        // 4. Suavização de Escala
+        // 4. Escala e Rotação
         const targetScale = getHandAperture(landmarks);
         currentScale += (targetScale - currentScale) * 0.15; 
         flower.object3D.scale.set(currentScale, currentScale, currentScale);
 
-        // 5. Suavização de Rotação
         const targetRotationZ = getHandRotation(landmarks);
         currentRotationZ += (targetRotationZ - currentRotationZ) * 0.1;
         flower.object3D.rotation.z = currentRotationZ;
     }
 
-    // --- MEDIAPIPE ---
     const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
     hands.setOptions({
       maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5
@@ -185,12 +196,24 @@
         const landmarks = results.multiHandLandmarks[0];
         
         if (!isPinned) {
-            // Desenha apenas os pontos usados para o cálculo do centro para debug visual
+            // Desenha apenas o triângulo da palma para debug
             const p0 = landmarks[0]; const p5 = landmarks[5]; const p17 = landmarks[17];
-            canvasCtx.fillStyle = "#00FF00";
-            [p0, p5, p17].forEach(p => {
-                canvasCtx.beginPath(); canvasCtx.arc(p.x * canvasElement.width, p.y * canvasElement.height, 4, 0, 2 * Math.PI); canvasCtx.fill();
-            });
+            
+            canvasCtx.beginPath();
+            canvasCtx.moveTo(p0.x * canvasElement.width, p0.y * canvasElement.height);
+            canvasCtx.lineTo(p5.x * canvasElement.width, p5.y * canvasElement.height);
+            canvasCtx.lineTo(p17.x * canvasElement.width, p17.y * canvasElement.height);
+            canvasCtx.closePath();
+            canvasCtx.strokeStyle = "rgba(0, 255, 0, 0.5)";
+            canvasCtx.lineWidth = 2;
+            canvasCtx.stroke();
+
+            // Desenha o ponto central calculado (a rosa deve ficar em cima dele)
+            const center = getTriangleCenter(landmarks);
+            canvasCtx.beginPath();
+            canvasCtx.arc(center.x * canvasElement.width, center.y * canvasElement.height, 5, 0, 2 * Math.PI);
+            canvasCtx.fillStyle = "yellow";
+            canvasCtx.fill();
         }
         updateAR(landmarks);
       } else {
