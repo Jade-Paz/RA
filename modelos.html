@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>Jardim AR – Escolha sua Planta</title>
 
+<!-- model-viewer com AR -->
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
 <link rel="stylesheet" href="style2.css">
 </head>
 
@@ -25,16 +25,23 @@
   <div class="category-title">Plantas de Interior</div>
   <div class="carousel-container">
     
+    <!-- Card: Monstera -->
     <div class="plant-card">
       <div class="model-preview">
-        <model-viewer 
-          src="assets/monstera.glb" 
-          auto-rotate 
-          camera-controls 
-          disable-zoom
-          ar 
+        <model-viewer
+          src="assets/monstera.glb"
+          auto-rotate
+          camera-controls
+          ar
           ar-modes="scene-viewer webxr quick-look"
-          ar-scale="fixed">
+          interaction-prompt="auto"
+          touch-action="pan-y"
+          ar-scale="auto"
+          ar-placement="floor"
+          enable-pan
+          shadow-intensity="1"
+          exposure="1.1"
+          environment-image="neutral">
         </model-viewer>
       </div>
       <div class="card-info">
@@ -46,16 +53,23 @@
       </div>
     </div>
 
+    <!-- Card: Dracena -->
     <div class="plant-card">
       <div class="model-preview">
-        <model-viewer 
-          src="assets/indoor_plant.glb" 
-          auto-rotate 
-          camera-controls 
-          disable-zoom
-          ar 
+        <model-viewer
+          src="assets/indoor_plant.glb"
+          auto-rotate
+          camera-controls
+          ar
           ar-modes="scene-viewer webxr quick-look"
-          ar-scale="fixed">
+          interaction-prompt="auto"
+          touch-action="pan-y"
+          ar-scale="auto"
+          ar-placement="floor"
+          enable-pan
+          shadow-intensity="1"
+          exposure="1.1"
+          environment-image="neutral">
         </model-viewer>
       </div>
       <div class="card-info">
@@ -67,16 +81,23 @@
       </div>
     </div>
 
+    <!-- Card: Rhizome -->
     <div class="plant-card">
       <div class="model-preview">
-        <model-viewer 
-          src="assets/rhyzome_plant.glb" 
-          auto-rotate 
-          camera-controls 
-          disable-zoom
-          ar 
+        <model-viewer
+          src="assets/rhyzome_plant.glb"
+          auto-rotate
+          camera-controls
+          ar
           ar-modes="scene-viewer webxr quick-look"
-          ar-scale="fixed">
+          interaction-prompt="auto"
+          touch-action="pan-y"
+          ar-scale="auto"
+          ar-placement="floor"
+          enable-pan
+          shadow-intensity="1"
+          exposure="1.1"
+          environment-image="neutral">
         </model-viewer>
       </div>
       <div class="card-info">
@@ -95,9 +116,14 @@
   <!-- ==================== -->
   <div class="category-title">🦋 Experiência AR</div>
   <div class="carousel-container">
+    <!-- Card: Experiência AR (Rosa para sua câmera custom) -->
     <div class="plant-card">
       <div class="model-preview">
-        <model-viewer src="assets/rosa.glb" auto-rotate camera-controls disable-zoom></model-viewer>
+        <model-viewer
+          src="assets/rosa.glb"
+          auto-rotate
+          camera-controls>
+        </model-viewer>
       </div>
       <div class="card-info">
         <div class="card-title">Borboleta Azul</div>
@@ -114,38 +140,24 @@
   <!-- ==================== -->
   <div class="category-title">Flores & Ornamentais</div>
   <div class="carousel-container">
-    
-    <div class="plant-card">
-      <div class="model-preview">
-        <model-viewer 
-          src="assets/rosa.glb" 
-          auto-rotate 
-          camera-controls 
-          disable-zoom
-          ar 
-          ar-modes="scene-viewer webxr quick-look"
-          ar-scale="fixed">
-        </model-viewer>
-      </div>
-      <div class="card-info">
-        <div class="card-title">Rosa Clássica</div>
-        <div class="card-desc">Símbolo de amor e elegância.</div>
-        <div class="btn-row">
-          <button class="btn-details" onclick="openModal('rosa')">Detalhes</button>
-        </div>
-      </div>
-    </div>
 
+    <!-- Card: Orquídea -->
     <div class="plant-card">
       <div class="model-preview">
-        <model-viewer 
-          src="assets/orchidea.glb" 
-          auto-rotate 
-          camera-controls 
-          disable-zoom
-          ar 
+        <model-viewer
+          src="assets/orchidea.glb"
+          auto-rotate
+          camera-controls
+          ar
           ar-modes="scene-viewer webxr quick-look"
-          ar-scale="fixed">
+          interaction-prompt="auto"
+          touch-action="pan-y"
+          ar-scale="auto"
+          ar-placement="floor"
+          enable-pan
+          shadow-intensity="1"
+          exposure="1.1"
+          environment-image="neutral">
         </model-viewer>
       </div>
       <div class="card-info">
@@ -157,16 +169,23 @@
       </div>
     </div>
 
+    <!-- Card: Blanket Phlox -->
     <div class="plant-card">
       <div class="model-preview">
-        <model-viewer 
-          src="assets/blanket_phlox.glb" 
-          auto-rotate 
-          camera-controls 
-          disable-zoom
-          ar 
+        <model-viewer
+          src="assets/blanket_phlox.glb"
+          auto-rotate
+          camera-controls
+          ar
           ar-modes="scene-viewer webxr quick-look"
-          ar-scale="fixed">
+          interaction-prompt="auto"
+          touch-action="pan-y"
+          ar-scale="auto"
+          ar-placement="floor"
+          enable-pan
+          shadow-intensity="1"
+          exposure="1.1"
+          environment-image="neutral">
         </model-viewer>
       </div>
       <div class="card-info">
@@ -178,16 +197,23 @@
       </div>
     </div>
 
+    <!-- Card: Armeria -->
     <div class="plant-card">
       <div class="model-preview">
-        <model-viewer 
-          src="assets/flower_armeria.glb" 
-          auto-rotate 
-          camera-controls 
-          disable-zoom
-          ar 
+        <model-viewer
+          src="assets/flower_armeria.glb"
+          auto-rotate
+          camera-controls
+          ar
           ar-modes="scene-viewer webxr quick-look"
-          ar-scale="fixed">
+          interaction-prompt="auto"
+          touch-action="pan-y"
+          ar-scale="auto"
+          ar-placement="floor"
+          enable-pan
+          shadow-intensity="1"
+          exposure="1.1"
+          environment-image="neutral">
         </model-viewer>
       </div>
       <div class="card-info">
@@ -206,24 +232,20 @@
   <!-- ==================== -->
   <div class="section-title">✨ Tutoriais & Info</div>
   <div class="stories-container">
-    
-    <div class="story-item" onclick="showTip('Como Usar', 'Vá até a seção Experiência AR e toque em <strong>Testar Agora ✨</strong>. Nos demais cards, use o botão AR nativo do visor.')">
+    <div class="story-item" onclick="showTip('Como Usar', 'Vá até a seção Experiência AR e toque em <strong>Testar Agora ✨</strong>. Nos demais cards, use o botão AR nativo do visor para posicionar, mover, rotacionar e redimensionar o modelo.')">
       <div class="story-circle"><img src="https://cdn-icons-png.flaticon.com/512/2659/2659360.png" alt="Tutorial"></div>
       <span class="story-text">Como Usar</span>
     </div>
-    
-    <div class="story-item" onclick="showTip('Controles', 'Use o gesto de pinça (👌) no AR nativo para <em>scale</em>. Na experiência da Borboleta Azul, a escala responde ao abrir/fechar da mão.')">
+    <div class="story-item" onclick="showTip('Controles', 'Gesto de pinça: escala. Dois dedos: mover na superfície. Girar com dois dedos: rotação. Toque longo: reposicionar.')">
       <div class="story-circle"><img src="https://cdn-icons-png.flaticon.com/512/5695/5695669.png" alt="Controle"></div>
       <span class="story-text">Controles</span>
     </div>
-    
     <div class="story-item" onclick="openCredits()">
-      <div class="story-circle" style="border-color: #ffc107;">
+      <div class="story-circle" style="border-color:#ffc107;">
         <img src="https://cdn-icons-png.flaticon.com/512/15466/15466060.png" alt="Créditos">
       </div>
       <span class="story-text">Créditos</span>
     </div>
-
   </div>
 
   <!-- ==================== -->
@@ -252,15 +274,16 @@
   <div id="creditsModal" class="modal-overlay">
     <div class="details-box">
       <h3>Créditos dos Modelos 3D</h3>
-      <ul style="list-style:none;padding-left:0; font-size:0.9rem; color:#555;">
+      <ul style="list-style:none;padding-left:0;font-size:0.9rem;color:#555;">
         <li>🌿 <strong>Monstera Deliciosa</strong> – <a href="https://sketchfab.com/3d-models/monstera-deliciosa-potted-mid-century-plant-1ab9bf841df04c07b1819be596327629" target="_blank">Giora</a></li>
         <li>🌱 <strong>Dracena Variegata</strong> – <a href="https://sketchfab.com/3d-models/indoor-plant-7c5e77d572c848458e5d898ac49f6f27" target="_blank">Malek Almsri</a></li>
+        <li>🌸 <strong>Blanket Phlox</strong> – <a href="https://sketchfab.com/3d-models/blanket-phlox-69bf5e21f767419dafec910f7a6be799" target="_blank">eb78</a></li>
         <li>🌾 <strong>Rhizome Plant</strong> – <a href="https://sketchfab.com/3d-models/rhyzome-plant-7191a1b935ac452987866573713e4da5" target="_blank">Blizzy</a></li>
-        <li>💮 <strong>Orchidea</strong> – <a href="https://sketchfab.com/antoniorossini" target="_blank">Antonio Rossini</a></li>
+        <li>🌼 <strong>Armeria Marítima</strong> – <a href="https://sketchfab.com/3d-models/flower-armeria-maritima-19778fa549cd4f21a7e5cdf036859beb" target="_blank">BrushDip</a></li>
+        <li>💮 <strong>Orquídea Rosa</strong> – <a href="https://sketchfab.com/3d-models/orchidea-9e351f19b3ba4910b7d15954e49ae178" target="_blank">Antonio Rossini</a></li>
         <li>🦋 <strong>Borboleta Azul</strong> – <a href="https://sketchfab.com/3d-models/ulysses-butterfly-1155effb97564974aa0553db3d5eed57" target="_blank">Ulysses Butterfly</a></li>
       </ul>
-      <p><strong>Criado por Jade Paz 👩‍💻</strong><br>
-      <small>Desenvolvedora Full Stack & AR</small></p>
+      <p><strong>Criado por Jade Paz 👩‍💻</strong><br><small>Desenvolvedora Full Stack & AR</small></p>
       <a href="https://jadeprog.github.io/site/?utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank">🌐 Portfólio</a>
       <br><br>
       <button class="close-modal" onclick="closeCredits()">Fechar</button>
@@ -293,14 +316,17 @@
     }
 
     function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
+
     function showTip(title, html) {
       document.getElementById('tTitle').innerText = title;
       document.getElementById('tContent').innerHTML = html;
       document.getElementById('tipsModal').style.display = 'flex';
     }
     function closeTips() { document.getElementById('tipsModal').style.display = 'none'; }
+
     function openCredits() { document.getElementById('creditsModal').style.display = 'flex'; }
     function closeCredits() { document.getElementById('creditsModal').style.display = 'none'; }
+
     function openCamera(plantName) { window.location.href = `camera.html?plant=${plantName}`; }
   </script>
 
