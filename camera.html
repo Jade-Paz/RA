@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🌱 AR - Controle de Animação</title>
+  <title>🌱 AR - Rosa Estável</title>
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
@@ -56,21 +56,16 @@
 
     /* --- CONTROLE DE VELOCIDADE (SLIDER) --- */
     #speedControl {
-        display: none; /* Começa escondido */
-        position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-        z-index: 100;
-        width: 80%; max-width: 300px;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
+        display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+        z-index: 100; width: 80%; max-width: 300px;
+        background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
         padding: 15px 20px; border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.2);
         flex-direction: column; align-items: center; gap: 5px;
         color: white; font-size: 12px; font-weight: bold;
     }
     
-    input[type=range] {
-        width: 100%; -webkit-appearance: none; background: transparent;
-    }
+    input[type=range] { width: 100%; -webkit-appearance: none; appearance: none; background: transparent; }
     input[type=range]::-webkit-slider-thumb {
         -webkit-appearance: none; height: 20px; width: 20px;
         border-radius: 50%; background: #ffffff;
@@ -114,7 +109,7 @@
                   gltf-model="assets/rosa.glb" 
                   scale="0 0 0" 
                   position="0 0 0"
-                  rotation="-70 180 0"
+                  rotation="-50 0 0" 
                   animation-mixer="clip: *; loop: repeat; timeScale: 1">
         </a-entity>
     </a-entity>
@@ -133,25 +128,23 @@
     const hintText = document.getElementById('hintText');
     const camEl = document.getElementById('cam');
     
-    // Elementos do Controle de Velocidade
     const speedControlDiv = document.getElementById('speedControl');
     const speedSlider = document.getElementById('animSpeed');
 
     let currentPos = new THREE.Vector3(0, 0, -2);
     let currentScale = 0;
-    let currentRotationZ = 0;
+    // let currentRotationZ = 0; // Removido
     let isPinned = false; 
     let handDetected = false; 
     let startX = 0;
 
-    // --- LÓGICA DO SLIDER DE VELOCIDADE ---
+    // --- SLIDER ---
     speedSlider.addEventListener('input', (e) => {
         const speed = e.target.value;
-        // Atualiza o timeScale do animation-mixer
         flower.setAttribute('animation-mixer', 'timeScale', speed);
     });
 
-    // --- INTERAÇÃO TOUCH ---
+    // --- TOUCH ---
     document.addEventListener('touchstart', (e) => { if(isPinned) startX = e.touches[0].clientX; });
     document.addEventListener('touchmove', (e) => {
         if (isPinned) {
@@ -164,26 +157,17 @@
     pinBtn.addEventListener('click', () => {
         const isVisible = arObject.getAttribute('visible');
         if (!isVisible && !isPinned) { alert("Mostre a mão primeiro!"); return; }
-        
         isPinned = !isPinned; 
-        
         if (isPinned) {
-            // ESTADO: FIXADO
             pinBtn.innerText = "🔓 Soltar";
             pinBtn.classList.add('pinned');
-            hintText.style.display = 'none'; // Esconde a dica para limpar a tela
-            
-            // Mostra o controle de velocidade
+            hintText.style.display = 'none'; 
             speedControlDiv.style.display = 'flex';
-            
         } else {
-            // ESTADO: SEGUINDO
             pinBtn.innerText = "📍 Fixar";
             pinBtn.classList.remove('pinned');
             hintText.style.display = 'block';
             hintText.innerText = "Seguindo o centro da palma...";
-            
-            // Esconde o controle de velocidade
             speedControlDiv.style.display = 'none';
         }
     });
@@ -197,15 +181,6 @@
             x: (p0.x + p5.x + p17.x) / 3, 
             y: (p0.y + p5.y + p17.y) / 3 
         };
-    }
-
-    function getHandRotation(landmarks) {
-        const p0 = landmarks[0];
-        const p9 = landmarks[9];
-        const dy = -(p9.y - p0.y); 
-        const dx = p9.x - p0.x;
-        let angleRad = Math.atan2(dy, dx);
-        return angleRad - (Math.PI / 2);
     }
 
     function getHandAperture(landmarks) {
@@ -238,9 +213,8 @@
         currentScale += (targetScale - currentScale) * 0.15; 
         flower.object3D.scale.set(currentScale, currentScale, currentScale);
 
-        const targetRotationZ = getHandRotation(landmarks);
-        currentRotationZ += (targetRotationZ - currentRotationZ) * 0.1;
-        flower.object3D.rotation.z = currentRotationZ;
+        // A ROTAÇÃO Z FOI REMOVIDA DAQUI
+        // flower.object3D.rotation.z = ... (Removido)
     }
 
     const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
