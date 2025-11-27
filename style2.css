@@ -1,139 +1,233 @@
-
-
 /* ========================= */
-/* RODAPÉ DO CRIADOR */
+/* VARIÁVEIS DE COR */
 /* ========================= */
-#creatorFooter {
-  width: 100%;
-  text-align: center;
-  padding: 25px 0;
-  font-size: 15px;
-  color: #064F57;
-  opacity: 0.95;
-  margin-top: 40px;
+:root {
+  --bg1: #5CC9C4;
+  --bg2: #B3ECE4;
+  --bg3: #F7F6E6;
+
+  --primary: #0A676C;
+  --primary-dark: #05575C;
+  --accent: #1D8F8A;
+
+  --text-strong: #05575C;
+  --text-medium: #064F57;
+
+  --card-bg: #ffffffdd;
+  --card-shadow: rgba(0,0,0,0.15);
+
+  --model-bg: #EAF7F5;
 }
 
-#creatorFooter a {
-  color: #0A676C;
-  font-weight: 700;
-  text-decoration: none;
-}
-
 /* ========================= */
-/* ESTILO GERAL */
+/* BACKGROUND GERAL */
 /* ========================= */
 body {
   margin: 0;
   padding: 0;
   font-family: "Poppins", sans-serif;
-  background: linear-gradient(180deg, #5CC9C4 0%, #B3ECE4 45%, #F7F6E6 100%);
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: linear-gradient(180deg, var(--bg1), var(--bg2) 45%, var(--bg3));
+  padding-bottom: 80px;
+  overflow-x: hidden;
 }
 
 /* ========================= */
-/* BOTÃO VOLTAR NO TOPO */
+/* HEADER */
 /* ========================= */
-#backBtnTop {
+header {
+  padding: 80px 20px 10px;
+  text-align: center;
+  color: var(--text-medium);
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+p.subtitle {
+  margin: 5px 0 20px;
+  color: var(--text-medium);
+  opacity: 0.85;
+  font-size: 1rem;
+}
+
+/* ========================= */
+/* BOTÃO VOLTAR */
+/* ========================= */
+.nav-btn {
   position: fixed;
   top: 15px;
   left: 15px;
   padding: 10px 18px;
-  background: #0A676C;
+  background: var(--primary);
   color: white;
-  font-size: 16px;
+  font-size: 0.9rem;
   font-weight: 700;
   border-radius: 10px;
-  cursor: pointer;
-  z-index: 999;
   border: none;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 /* ========================= */
-/* CABEÇALHO */
+/* TÍTULO DAS SEÇÕES */
 /* ========================= */
-header {
-  width: 100%;
-  text-align: center;
-  padding: 60px 20px 20px;
-  color: #064F57;
-}
-
-h1 {
-  font-weight: 900;
-  margin: 0;
-}
-
-/* ========================= */
-/* CARD DE MODELOS */
-/* ========================= */
-.viewer-card {
-  width: 90%;
-  max-width: 380px;
-  background: #ffffffdd;
-  padding: 20px;
-  border-radius: 16px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-}
-
-.viewer-title {
-  font-size: 18px;
-  color: #05575C;
+.category-title {
+  padding: 0 20px;
+  font-size: 1.2rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  color: var(--primary-dark);
+  margin-top: 25px;
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+/* ========================= */
+/* CARROSSEL */
+/* ========================= */
+.carousel-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px 20px 30px 20px;
+  scroll-behavior: smooth;
+}
+
+.carousel-container::-webkit-scrollbar { display: none; }
+
+/* ========================= */
+/* CARDS */
+/* ========================= */
+.plant-card {
+  flex: 0 0 260px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 4px 14px var(--card-shadow);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.model-preview {
+  height: 230px;
+  background: var(--model-bg);
 }
 
 model-viewer {
   width: 100%;
-  height: 300px;
-  border-radius: 12px;
-  background: #EAF7F5;
+  height: 100%;
+}
+
+/* Conteúdo do card */
+.card-info {
+  padding: 15px;
+  text-align: center;
+}
+
+.card-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-strong);
+  margin-bottom: 5px;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: var(--text-medium);
+  opacity: 0.85;
+  margin-bottom: 15px;
 }
 
 /* ========================= */
-/* BOTÕES */
+/* BOTÕES DO CARD */
 /* ========================= */
 .btn-row {
   display: flex;
   gap: 10px;
-  margin-top: 12px;
 }
 
-.btn-ar,
-.btn-details {
+button {
   flex: 1;
-  padding: 10px;
   border: none;
-  color: white;
+  padding: 10px;
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
 }
 
-.btn-ar {
-  background: #1D8F8A;
+/* Botão Detalhes */
+.btn-details {
+  background: var(--primary-dark);
+  color: white;
 }
 
-.btn-details {
-  background: #05575C;
+/* Botão AR */
+.btn-ar {
+  background: var(--accent);
+  color: white;
+}
+
+/* ========================= */
+/* STORIES */
+/* ========================= */
+.section-title {
+  padding: 0 20px;
+  font-size: 1.3rem;
+  margin-top: 30px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.stories-container {
+  display: flex;
+  gap: 15px;
+  padding: 15px 20px;
+  overflow-x: auto;
+}
+
+.stories-container::-webkit-scrollbar { display: none; }
+
+.story-item {
+  flex: 0 0 70px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.story-circle {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.story-circle img {
+  width: 100%;
+  height: 100%;
+}
+
+.story-text {
+  font-size: 0.75rem;
+  color: var(--primary-dark);
+  font-weight: 600;
 }
 
 /* ========================= */
 /* MODAIS */
 /* ========================= */
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
   justify-content: center;
   align-items: center;
-  background: rgba(0,0,0,0.4);
   z-index: 2000;
 }
 
@@ -144,13 +238,12 @@ model-viewer {
   padding: 22px;
   border-radius: 16px;
   box-shadow: 0 8px 22px rgba(0,0,0,0.25);
-  text-align: left;
-  color: #05575C;
+  color: var(--text-strong);
 }
 
 .close-modal {
   margin-top: 18px;
-  background: #0A676C;
+  background: var(--primary);
   color: white;
   border: none;
   padding: 10px 18px;
@@ -158,4 +251,21 @@ model-viewer {
   cursor: pointer;
   font-weight: 700;
   width: 100%;
+}
+
+/* ========================= */
+/* FOOTER */
+/* ========================= */
+footer {
+  text-align: center;
+  padding: 25px 0;
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  opacity: 0.95;
+}
+
+footer a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
 }
