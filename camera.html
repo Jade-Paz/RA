@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🌱 AR - Controle de Mão</title>
+  <title>🌱 AR - Câmera Traseira</title>
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
@@ -17,7 +17,9 @@
     
     video, canvas { 
         position: absolute; inset: 0; width: 100%; height: 100%; 
-        object-fit: cover; transform: scaleX(-1); 
+        object-fit: cover; 
+        /* ALTERAÇÃO CSS: Removi o scaleX(-1) para a câmera traseira não ficar espelhada */
+        transform: none; 
     }
     
     a-scene{ position:fixed; inset:0; z-index:2; pointer-events:none;}
@@ -28,55 +30,28 @@
         background:rgba(0,0,0,.6); color:rgba(255,255,255,0.9); 
         padding:10px 20px; border-radius:30px; font-size:13px; z-index:10; 
         text-align:center; pointer-events: none;
-        backdrop-filter: blur(4px); /* Leve efeito glass na dica também */
+        backdrop-filter: blur(4px);
     }
 
     /* --- BOTÃO LIQUID GLASS --- */
     .glass-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 100; /* Fica acima de tudo */
-        
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-
-        padding: 10px 20px;
-        text-decoration: none;
-        color: rgba(255, 255, 255, 0.9);
-        font-weight: 500;
-        font-size: 14px;
-        
-        /* O Efeito Vidro Líquido */
-        background: rgba(255, 255, 255, 0.1); /* Branco bem transparente */
-        backdrop-filter: blur(12px);          /* Desfoque do fundo */
-        -webkit-backdrop-filter: blur(12px);  /* Para funcionar no iPhone (Safari) */
-        border: 1px solid rgba(255, 255, 255, 0.2); /* Borda sutil */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);  /* Sombra suave */
-        
-        border-radius: 50px;
-        transition: all 0.3s ease;
+        position: fixed; top: 20px; left: 20px; z-index: 100;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        padding: 10px 20px; text-decoration: none;
+        color: rgba(255, 255, 255, 0.9); font-weight: 500; font-size: 14px;
+        background: rgba(255, 255, 255, 0.1); 
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2); 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 50px; transition: all 0.3s ease;
     }
-
-    .glass-btn:hover {
-        background: rgba(255, 255, 255, 0.25); /* Fica mais claro ao passar o mouse */
-        transform: scale(1.02);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    }
-    
-    .glass-btn:active {
-        transform: scale(0.95);
-    }
-
+    .glass-btn:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.02); }
+    .glass-btn:active { transform: scale(0.95); }
   </style>
 </head>
 <body>
 
-  <a href="modelos.html" class="glass-btn">
-    ← Voltar
-  </a>
+  <a href="modelos.html" class="glass-btn">← Voltar</a>
 
   <div class="media-container">
     <video id="inputVideo" playsinline muted></video>
@@ -84,22 +59,14 @@
   </div>
 
   <div class="hint">
-    Faça o gesto de pinça (👌) para controlar o tamanho!
+    Use a câmera traseira. Faça o gesto de pinça (👌) para controlar!
   </div>
 
-  <a-scene 
-    embedded 
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false">
-    
+  <a-scene embedded vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     <a-entity id="cam" camera="near:0.01; far:100" position="0 0 0"></a-entity>
     
     <a-entity id="arObject" position="0 0 -2" visible="false">
-        <a-entity id="flower"
-          gltf-model="assets/rosa.glb"
-          scale="0 0 0"
-          position="0 -0.5 0">
-        </a-entity>
+        <a-entity id="flower" gltf-model="assets/rosa.glb" scale="0 0 0" position="0 -0.5 0"></a-entity>
     </a-entity>
 
     <a-entity light="type:ambient; intensity:1.5;"></a-entity>
@@ -136,6 +103,7 @@
         arObject.setAttribute('visible', true);
         const center = getPalmCenter(landmarks);
         
+        // Ajuste de sensibilidade
         const sensitivityX = 2.5; const sensitivityY = 1.5;
         const x = (center.x - 0.5) * sensitivityX;
         const y = -(center.y - 0.5) * sensitivityY;
@@ -148,7 +116,10 @@
 
     const hands = new Hands({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`});
     hands.setOptions({
-      maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5
+      maxNumHands: 1, 
+      modelComplexity: 0, 
+      minDetectionConfidence: 0.5, 
+      minTrackingConfidence: 0.5
     });
 
     hands.onResults(results => {
@@ -167,10 +138,15 @@
       }
     });
 
+    // --- CONFIGURAÇÃO DA CÂMERA TRASEIRA ---
     const camera = new Camera(videoElement, {
       onFrame: async () => { await hands.send({image: videoElement}); },
-      width: 640, height: 480
+      width: 640, 
+      height: 480,
+      facingMode: 'environment' // <--- ISSO FORÇA A CÂMERA TRASEIRA
     });
+    
+    // Inicia e pede permissão automaticamente
     camera.start(); 
   </script>
 </body>
