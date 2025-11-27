@@ -16,30 +16,68 @@
     video, canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: none; }
     a-scene{ position:fixed; inset:0; z-index:2; pointer-events:none;}
     
-    .hint{ 
-        position:fixed; bottom:80px; left:50%; transform:translateX(-50%); 
-        background:rgba(0,0,0,.6); color:rgba(255,255,255,0.9); 
-        padding:10px 20px; border-radius:30px; font-size:13px; z-index:10; 
-        text-align:center; pointer-events: none; backdrop-filter: blur(4px); width: 85%;
+    /* --- ESTILO GERAL DE VIDRO (REUTILIZÁVEL) --- */
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.15); /* Fundo translúcido */
+        backdrop-filter: blur(12px);          /* Desfoque pesado */
+        -webkit-backdrop-filter: blur(12px);  /* Safari */
+        border: 1px solid rgba(255, 255, 255, 0.3); /* Borda fina */
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Sombra suave */
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5); /* Leitura melhor */
     }
 
+    /* Dica (Hint) agora em vidro */
+    .hint { 
+        position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); 
+        padding: 12px 24px; border-radius: 30px; 
+        font-size: 13px; font-weight: 500;
+        z-index: 10; text-align: center; pointer-events: none;
+        width: max-content; max-width: 85%;
+        
+        /* Aplica o estilo vidro */
+        background: rgba(20, 20, 20, 0.3); /* Um pouco mais escuro para contraste */
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    /* Botões */
     .glass-btn {
         position: fixed; z-index: 100;
         display: flex; align-items: center; justify-content: center; gap: 8px;
         padding: 12px 24px; text-decoration: none;
-        color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 14px;
-        background: rgba(255, 255, 255, 0.15); 
-        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.3); 
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        border-radius: 50px; transition: all 0.3s ease;
+        font-weight: 600; font-size: 14px;
+        border-radius: 50px; 
+        transition: all 0.3s ease;
         cursor: pointer; user-select: none;
+        
+        /* Herda as propriedades do vidro */
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
-    .glass-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.3); }
+    
+    .glass-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.2); }
 
+    /* Posicionamento dos Botões */
     #backBtn { top: 20px; left: 20px; }
-    #pinBtn { bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(10, 103, 108, 0.6); }
-    #pinBtn.pinned { background: rgba(255, 71, 87, 0.6); border-color: rgba(255, 71, 87, 0.8); }
+    
+    #pinBtn { 
+        bottom: 30px; left: 50%; transform: translateX(-50%); 
+        width: max-content;
+    }
+
+    /* Estado "FIXADO" (Vidro Vermelho) */
+    #pinBtn.pinned {
+        background: rgba(255, 50, 50, 0.25); /* Vermelho translúcido */
+        border-color: rgba(255, 100, 100, 0.6);
+        box-shadow: 0 0 15px rgba(255, 50, 50, 0.3); /* Brilho vermelho */
+    }
   </style>
 </head>
 <body>
@@ -60,7 +98,10 @@
     <a-entity id="cam" camera="near:0.01; far:100; fov: 70" position="0 0 0"></a-entity>
     
     <a-entity id="arObject" position="0 0 -2" visible="false">
-        <a-entity id="flower" gltf-model="assets/rosa.glb" scale="0 0 0" position="0 0 0"></a-entity>
+        <a-entity id="flower" 
+        gltf-model="assets/rosa.glb" 
+        scale="0 0 0" 
+        position="0 1 0"></a-entity>
     </a-entity>
 
     <a-entity light="type:ambient; intensity:1.5;"></a-entity>
@@ -77,11 +118,9 @@
     const hintText = document.getElementById('hintText');
     const camEl = document.getElementById('cam');
 
-    // Variáveis de suavização
     let currentPos = new THREE.Vector3(0, 0, -2);
     let currentScale = 0;
     let currentRotationZ = 0;
-    
     let isPinned = false; 
     let handDetected = false; 
     let startX = 0;
@@ -111,21 +150,17 @@
         }
     });
 
-    // --- CÁLCULO EXATO DO CENTRO DO TRIÂNGULO (CENTROIDE) ---
+    // --- LÓGICA AR / MEDIAPIPE ---
     function getTriangleCenter(landmarks) {
-        // Pega os 3 pontos: Pulso (0), Base Indicador (5), Base Mindinho (17)
         const p0 = landmarks[0];
         const p5 = landmarks[5];
         const p17 = landmarks[17];
-
-        // Média aritmética simples para achar o centroide
         return { 
             x: (p0.x + p5.x + p17.x) / 3, 
             y: (p0.y + p5.y + p17.y) / 3 
         };
     }
 
-    // Calcula inclinação da mão
     function getHandRotation(landmarks) {
         const p0 = landmarks[0];
         const p9 = landmarks[9];
@@ -147,31 +182,23 @@
 
         arObject.setAttribute('visible', true);
         
-        // 1. Pega o centro do triângulo (0 a 1)
+        // Centro Geométrico Preciso
         const center = getTriangleCenter(landmarks);
         
-        // 2. PROJEÇÃO 3D PRECISA (UNPROJECT)
-        // Converte coordenadas 2D do MediaPipe para coordenadas 3D do mundo A-Frame
+        // Unproject (Pixel -> Mundo 3D)
         const threeCamera = camEl.getObject3D('camera');
-        
-        // Normaliza para o espaço de dispositivo (-1 a +1)
-        // X: 0..1 -> -1..1
-        // Y: 0..1 -> 1..-1 (Invertido)
         const ndcX = (center.x * 2) - 1;
         const ndcY = -(center.y * 2) + 1;
-        
-        const vector = new THREE.Vector3(ndcX, ndcY, 0.5); // 0.5 é profundidade normalizada
+        const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
         vector.unproject(threeCamera);
-        
         const dir = vector.sub(threeCamera.position).normalize();
-        const distance = 2; // Distância fixa da câmera (em metros)
+        const distance = 2; 
         const targetPos = threeCamera.position.clone().add(dir.multiplyScalar(distance));
 
-        // 3. Suavização (Lerp)
-        currentPos.lerp(targetPos, 0.2); // Move 20% em direção ao alvo
+        // Suavizações
+        currentPos.lerp(targetPos, 0.2); 
         arObject.object3D.position.copy(currentPos);
 
-        // 4. Escala e Rotação
         const targetScale = getHandAperture(landmarks);
         currentScale += (targetScale - currentScale) * 0.15; 
         flower.object3D.scale.set(currentScale, currentScale, currentScale);
@@ -196,23 +223,18 @@
         const landmarks = results.multiHandLandmarks[0];
         
         if (!isPinned) {
-            // Desenha apenas o triângulo da palma para debug
+            // Debug Visual Discreto (Pontos brancos translúcidos)
             const p0 = landmarks[0]; const p5 = landmarks[5]; const p17 = landmarks[17];
+            canvasCtx.fillStyle = "rgba(255, 255, 255, 0.3)";
+            [p0, p5, p17].forEach(p => {
+                canvasCtx.beginPath(); canvasCtx.arc(p.x * canvasElement.width, p.y * canvasElement.height, 3, 0, 2 * Math.PI); canvasCtx.fill();
+            });
             
-            canvasCtx.beginPath();
-            canvasCtx.moveTo(p0.x * canvasElement.width, p0.y * canvasElement.height);
-            canvasCtx.lineTo(p5.x * canvasElement.width, p5.y * canvasElement.height);
-            canvasCtx.lineTo(p17.x * canvasElement.width, p17.y * canvasElement.height);
-            canvasCtx.closePath();
-            canvasCtx.strokeStyle = "rgba(0, 255, 0, 0.5)";
-            canvasCtx.lineWidth = 2;
-            canvasCtx.stroke();
-
-            // Desenha o ponto central calculado (a rosa deve ficar em cima dele)
+            // Centroide
             const center = getTriangleCenter(landmarks);
             canvasCtx.beginPath();
-            canvasCtx.arc(center.x * canvasElement.width, center.y * canvasElement.height, 5, 0, 2 * Math.PI);
-            canvasCtx.fillStyle = "yellow";
+            canvasCtx.arc(center.x * canvasElement.width, center.y * canvasElement.height, 4, 0, 2 * Math.PI);
+            canvasCtx.fillStyle = "rgba(255, 255, 0, 0.5)";
             canvasCtx.fill();
         }
         updateAR(landmarks);
