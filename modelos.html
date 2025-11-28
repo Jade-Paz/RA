@@ -129,7 +129,23 @@
         <div class="card-title">Borboleta Azul</div>
         <div class="card-desc">Toque para ver a mágica acontecer na palma da sua mão.</div>
         <div class="btn-row">
-          <button class="btn-ar" onclick="openCamera('rosa')">Testar Agora ✨</button>
+          <button class="btn-ar" onclick="openCamera('oxygen')">Testar Agora ✨</button>
+        </div>
+      </div>
+    </div>
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer
+          src="assets/oxygen.glb"
+          auto-rotate
+          camera-controls>
+        </model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Planta Respirando</div>
+        <div class="card-desc">Toque para ver a mágica acontecer na palma da sua mão.</div>
+        <div class="btn-row">
+          <button class="btn-ar" onclick="openCamera2('rosa')">Testar Agora ✨</button>
         </div>
       </div>
     </div>
@@ -200,33 +216,35 @@
     </div>
 
         <!-- Card: Lírios -->
-    <div class="plant-card">
-      <div class="model-preview">
-        <model-viewer
-          src="assets/flower_armeria.glb"
-          auto-rotate
-          camera-controls
-          ar
-          ar-modes="scene-viewer webxr quick-look"
-          interaction-prompt="auto"
-          touch-action="pan-y"
-          ar-scale="auto"
-          ar-placement="floor"
-          enable-pan
-          shadow-intensity="1"
-          exposure="1.1"
-          environment-image="neutral"
-          scale="0.02 0.02 0.02">
-        </model-viewer>
-      </div>
-      <div class="card-info">
-        <div class="card-title">Lírios</div>
-        <div class="card-desc">Pequena e resistente com flores rosa.</div>
-        <div class="btn-row">
-          <button class="btn-details" onclick="openModal('armeria')">Ver Detalhes</button>
+    <!-- Card: Lírios -->
+      <div class="plant-card">
+        <div class="model-preview">
+          <model-viewer
+            src="assets/flower_armeria.glb"
+            auto-rotate
+            camera-controls
+            ar
+            ar-modes="scene-viewer webxr quick-look"
+            interaction-prompt="auto"
+            touch-action="pan-y"
+            ar-scale="auto"
+            ar-placement="floor"
+            enable-pan
+            shadow-intensity="1"
+            exposure="1.1"
+            environment-image="neutral"
+            scale="0.02 0.02 0.02">
+          </model-viewer>
+        </div>
+        <div class="card-info">
+          <div class="card-title">Lírios</div>
+          <div class="card-desc">Pequena e resistente com flores rosa.</div>
+          <div class="btn-row">
+            <button class="btn-details" onclick="openModal('armeria')">Ver Detalhes</button>
+          </div>
         </div>
       </div>
-    </div>
+
 
   </div>
 
@@ -331,6 +349,9 @@
     function closeCredits() { document.getElementById('creditsModal').style.display = 'none'; }
 
     function openCamera(plantName) { window.location.href = `camera.html?plant=${plantName}`; }
+    function openCamera2(plantName) {window.location.href = `camera2.html?plant=${plantName}`;
+}
+
   </script>
 
 </body>
