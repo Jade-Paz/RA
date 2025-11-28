@@ -36,7 +36,7 @@ body {
 /* ========================= */
 header {
   padding: 80px 20px 10px;
-  text-align: center;
+  text-align: left;
   color: var(--text-medium);
 }
 
@@ -44,6 +44,7 @@ h1 {
   margin: 0;
   font-size: 2rem;
   font-weight: 900;
+  text-align: left;
 }
 
 p.subtitle {
@@ -51,15 +52,16 @@ p.subtitle {
   color: var(--text-medium);
   opacity: 0.85;
   font-size: 1rem;
+  text-align: left;
 }
 
 /* ========================= */
-/* BOTÃO VOLTAR */
+/* BOTÃO VOLTAR FIXO */
 /* ========================= */
 .nav-btn {
   position: fixed;
-  top: 15px;
-  left: 15px;
+  top: 10px;
+  left: 10px;
   padding: 10px 18px;
   background: var(--primary);
   color: white;
@@ -68,8 +70,14 @@ p.subtitle {
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  z-index: 1000;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 3000; /* sempre acima de tudo */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
 }
 
 /* ========================= */
@@ -269,4 +277,3 @@ footer a {
   font-weight: 700;
   text-decoration: none;
 }
-
