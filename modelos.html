@@ -347,15 +347,98 @@
   </footer>
 
   <script>
-    const plantInfo = {
-      'rosa': { title: 'Rosa Clássica', desc: 'A rainha das flores.', benefits: '• Perfume marcante<br>• Decoração romântica' },
-      'monstera': { title: 'Monstera Deliciosa', desc: 'Planta elegante e símbolo de crescimento.', benefits: '• Purifica o ar<br>• Decoração moderna' },
-      'dracena': { title: 'Dracena Variegata', desc: 'Resistente e ideal para interiores.', benefits: '• Purifica toxinas<br>• Fácil de cuidar' },
-      'phlox': { title: 'Blanket Phlox', desc: 'Planta rasteira ornamental.', benefits: '• Ideal para cobrir superfícies<br>• Atrai polinizadores' },
-      'rhizome': { title: 'Rhizome Plant', desc: 'Planta tropical.', benefits: '• Traz frescor<br>• Fácil de manter' },
-      'armeria': { title: 'Armeria Marítima', desc: 'Pequena e resistente.', benefits: '• Resistente ao calor<br>• Leveza e delicadeza' },
-      'orchidea': { title: 'Orquídea Rosa', desc: 'Símbolo de beleza e força.', benefits: '• Decoração refinada<br>• Serenidade' }
-    };
+   const plantInfo = {
+  'rosa': { 
+    title: 'Rosa Clássica', 
+    desc: `
+      A rainha das flores, símbolo de paixão e beleza.
+    `, 
+    benefits: `
+      • <strong>Ambiente Ideal:</strong> Jardins, varandas com sol pleno.<br>
+      • <strong>Luz:</strong> Sol pleno (mínimo 6 horas/dia).<br>
+      • <strong>Rega:</strong> Frequente, mantendo o solo úmido, mas não encharcado.<br>
+      • <strong>Impacto:</strong> Perfume marcante e decoração romântica.
+    ` 
+  },
+
+  'monstera': { 
+    title: 'Costela-de-Adão (Monstera Deliciosa)', 
+    desc: `
+      Planta tropical elegante, famosa por suas folhas grandes e recortadas.
+    `, 
+    benefits: `
+      • <strong>Ambiente Ideal:</strong> Salas de estar, escritórios (luz indireta).<br>
+      • <strong>Luz:</strong> Luz indireta brilhante. Evitar sol direto.<br>
+      • <strong>Rega:</strong> Moderada. Deixe o solo secar entre as regas.<br>
+      • <strong>Impacto:</strong> Purifica o ar, remove toxinas e traz decoração moderna.
+    ` 
+  },
+
+  'dracena': { 
+    title: 'Dracena Variegata', 
+    desc: `
+      Resistente e de fácil cuidado, ideal para iniciantes no cultivo.
+    `, 
+    benefits: `
+      • <strong>Ambiente Ideal:</strong> Quartos e corredores (tolera pouca luz).<br>
+      • <strong>Luz:</strong> Luz indireta a sombra parcial.<br>
+      • <strong>Rega:</strong> Baixa. Regar apenas quando o solo estiver seco.<br>
+      • <strong>Impacto:</strong> Purifica toxinas como formaldeído e é muito resistente.
+    ` 
+  },
+
+  'phlox': { 
+    title: 'Blanket Phlox', 
+    desc: `
+      Planta rasteira ornamental com flores vibrantes, excelente para cobertura de solo.
+    `, 
+    benefits: `
+      • <strong>Ambiente Ideal:</strong> Canteiros, jardins de pedra e áreas externas.<br>
+      • <strong>Luz:</strong> Sol pleno.<br>
+      • <strong>Rega:</strong> Moderada a baixa. Resistente à seca após estabelecida.<br>
+      • <strong>Impacto:</strong> Cobre superfícies e atrai polinizadores.
+    ` 
+  },
+
+  'rhizome': { 
+    title: 'Rhizome Plant (Zamioculcas)', 
+    desc: `
+      Planta tropical extremamente resistente, ideal para quem esquece de regar.
+    `, 
+    benefits: `
+      • <strong>Ambiente Ideal:</strong> Banheiros, cozinhas e locais com pouca luz.<br>
+      • <strong>Luz:</strong> Luz indireta baixa a média.<br>
+      • <strong>Rega:</strong> Muito baixa. Regar a cada 2–4 semanas.<br>
+      • <strong>Impacto:</strong> Traz frescor e tolera longos períodos sem cuidados.
+    ` 
+  },
+
+  'armeria': { 
+    title: 'Armeria Marítima (Lírios)', 
+    desc: `
+      Pequena e resistente, com flores delicadas em formato de pompom.
+    `, 
+    benefits: `
+      • <strong>Ambiente Ideal:</strong> Vasos, jardins e áreas costeiras.<br>
+      • <strong>Luz:</strong> Sol pleno a parcial.<br>
+      • <strong>Rega:</strong> Moderada.<br>
+      • <strong>Impacto:</strong> Resistente ao calor e maresia, trazendo leveza ao ambiente.
+    ` 
+  },
+
+  'orchidea': { 
+    title: 'Orquídea Rosa (Phalaenopsis)', 
+    desc: `
+      Uma das orquídeas mais populares, símbolo de beleza, força e delicadeza.
+    `, 
+    benefits: `
+      • <strong>Ambiente Ideal:</strong> Salas, mesas e aparadores com luz indireta.<br>
+      • <strong>Luz:</strong> Indireta brilhante; ideal perto de janelas voltadas ao leste.<br>
+      • <strong>Rega:</strong> Moderada. Regar quando o substrato estiver quase seco.<br>
+      • <strong>Impacto:</strong> Decoração refinada, traz serenidade e é ótimo presente.
+    ` 
+  }
+};
 
     function openModal(plantKey) {
       const data = plantInfo[plantKey];
