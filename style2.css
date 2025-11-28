@@ -29,14 +29,14 @@ body {
   background: linear-gradient(180deg, var(--bg1), var(--bg2) 45%, var(--bg3));
   padding-bottom: 80px;
   overflow-x: hidden;
-  position: relative; /* importante para empilhamento */
+  position: relative;
 }
 
 /* ========================= */
 /* HEADER */
 /* ========================= */
 header {
-  padding: 60px 20px 10px; /* diminuiu o topo */
+  padding: 60px 20px 10px;
   text-align: left;
   color: var(--text-medium);
 }
@@ -72,7 +72,7 @@ p.subtitle {
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  z-index: 999999; /* acima de tudo */
+  z-index: 999999;
   pointer-events: auto;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   transition: background 0.3s ease, transform 0.2s ease;
@@ -92,7 +92,6 @@ p.subtitle {
   font-weight: 700;
   color: var(--primary-dark);
   margin-top: 25px;
-  text-transform: none;
   letter-spacing: 0.3px;
 }
 
@@ -168,13 +167,11 @@ button {
   cursor: pointer;
 }
 
-/* Botão Detalhes */
 .btn-details {
   background: var(--primary-dark);
   color: white;
 }
 
-/* Botão AR */
 .btn-ar {
   background: var(--accent);
   color: white;
@@ -262,6 +259,34 @@ button {
   cursor: pointer;
   font-weight: 700;
   width: 100%;
+}
+
+/* ========================= */
+/* SCROLL NA ABA DE CONTROLES */
+/* ========================= */
+#tContent {
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 6px;
+  text-align: left;
+}
+
+#tContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+#tContent::-webkit-scrollbar-track {
+  background: #e7f4f3;
+  border-radius: 10px;
+}
+
+#tContent::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+#tContent::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
 
 /* ========================= */
