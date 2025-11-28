@@ -112,46 +112,6 @@
   </div> 
 
   <!-- ==================== -->
-  <!-- EXPERIÊNCIA AR -->
-  <!-- ==================== -->
-  <div class="category-title">🦋 3D Animados AR</div>
-  <div class="carousel-container">
-    <!-- Card: Experiência AR (Rosa para sua câmera custom) -->
-    <div class="plant-card">
-      <div class="model-preview">
-        <model-viewer
-          src="assets/rosa.glb"
-          auto-rotate
-          camera-controls>
-        </model-viewer>
-      </div>
-      <div class="card-info">
-        <div class="card-title">Borboleta Azul</div>
-        <div class="card-desc">Toque para ver a mágica acontecer na palma da sua mão.</div>
-        <div class="btn-row">
-          <button class="btn-ar" onclick="openCamera('oxygen')">Testar Agora ✨</button>
-        </div>
-      </div>
-    </div>
-    <div class="plant-card">
-      <div class="model-preview">
-        <model-viewer
-          src="assets/oxygen.glb"
-          auto-rotate
-          camera-controls>
-        </model-viewer>
-      </div>
-      <div class="card-info">
-        <div class="card-title">Planta Alien</div>
-        <div class="card-desc">Toque para ver a mágica acontecer na palma da sua mão.</div>
-        <div class="btn-row">
-          <button class="btn-ar" onclick="openCamera2('rosa')">Testar Agora ✨</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== -->
   <!-- FLORES & ORNAMENTAIS -->
   <!-- ==================== -->
   <div class="category-title">Flores & Ornamentais</div>
@@ -186,7 +146,6 @@
         </div>
       </div>
 
-
     <!-- Card: Blanket Phlox -->
     <div class="plant-card">
       <div class="model-preview">
@@ -215,7 +174,6 @@
       </div>
     </div>
 
-        <!-- Card: Lírios -->
     <!-- Card: Lírios -->
       <div class="plant-card">
         <div class="model-preview">
@@ -244,23 +202,98 @@
           </div>
         </div>
       </div>
+  </div>
 
-
+  <!-- ==================== -->
+  <!-- EXPERIÊNCIA AR -->
+  <!-- ==================== -->
+  <div class="category-title">🦋 3D Animados AR</div>
+  <div class="carousel-container">
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer src="assets/rosa.glb" auto-rotate camera-controls></model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Borboleta Azul</div>
+        <div class="card-desc">Toque para ver a mágica acontecer na palma da sua mão.</div>
+        <div class="btn-row">
+          <button class="btn-ar" onclick="openCamera('oxygen')">Testar Agora ✨</button>
+        </div>
+      </div>
+    </div>
+    <div class="plant-card">
+      <div class="model-preview">
+        <model-viewer src="assets/oxygen.glb" auto-rotate camera-controls></model-viewer>
+      </div>
+      <div class="card-info">
+        <div class="card-title">Planta Alien</div>
+        <div class="card-desc">Toque para ver a mágica acontecer na palma da sua mão.</div>
+        <div class="btn-row">
+          <button class="btn-ar" onclick="openCamera2('rosa')">Testar Agora ✨</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ==================== -->
   <!-- TUTORIAIS & INFO -->
   <!-- ==================== -->
-  <div class="section-title">✨ Tutoriais & Info</div>
+  <div class="section-title">✨ Tutoriais & Créditos</div>
   <div class="stories-container">
-    <div class="story-item" onclick="showTip('Como Usar', 'Vá até a seção Experiência AR e toque em <strong>Testar Agora ✨</strong>. Nos demais cards, use o botão AR nativo do visor para posicionar, mover, rotacionar e redimensionar o modelo.')">
-      <div class="story-circle"><img src="https://cdn-icons-png.flaticon.com/512/2659/2659360.png" alt="Tutorial"></div>
+
+    <!-- COMO USAR -->
+    <div class="story-item" onclick="showTip(
+      'Como Usar',
+      `
+      Na seção <strong> Experiência AR </strong> terão dois tipos de modelos<strong> Animados e Não Animados ✨</strong>.<br><br>
+      Na Seção 3D Animados, toque em Testar Agora e clique em premitir para acessar a câmera.<br><br>
+
+      <strong>🔹 Na visualização da plantas:</strong><br>
+      Clique no <strong>cubinho 3D</strong> (como na imagem abaixo) para entrar no modo de experiência das plantas 🌿.<br><br>
+
+      <img src='assets/verdetalhe.png' alt='Botão do cubo AR'
+      style='width:160px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.25); margin:8px 0;'><br>
+
+      <em>Esse botão aparece no canto inferior direito do modelo — ele abre a visualização em realidade aumentada onde permite o usuária a visualizar como ficaria os modelos no seu ambiente.</em>`)">
+      <div class="story-circle">
+        <img src="https://cdn-icons-png.flaticon.com/512/2659/2659360.png" alt="Tutorial">
+      </div>
       <span class="story-text">Como Usar</span>
     </div>
-    <div class="story-item" onclick="showTip('Controles', 'Gesto de pinça: escala. Dois dedos: mover na superfície. Girar com dois dedos: rotação. Toque longo: reposicionar.')">
-      <div class="story-circle"><img src="https://cdn-icons-png.flaticon.com/512/5695/5695669.png" alt="Controle"></div>
+
+    <!-- CONTROLES -->
+    <div class="story-item" onclick="showTip(
+  'Controles, Gestos e Animações',
+  `
+  <strong>🖐️ Interaja com as plantas em 3D:</strong><br><br>
+  <ul style='padding-left:18px; margin:0; text-align:left;'>
+    <li><strong>👌 Pinça (zoom com dois dedos):</strong> Aumente ou diminua o tamanho do modelo.</li>
+    <li><strong>🫱 Arrastar com um dedo:</strong> Gire o modelo para ver de outros ângulos.</li>
+    <li><strong>✋ Dois dedos:</strong> Mova o modelo pela tela ou reposicione-o.</li>
+    <li><strong>🔄 Girar dois dedos:</strong> Rotacione o modelo em torno do eixo.</li>
+    <li><strong>👆 Toque longo:</strong> Reposicione o modelo no espaço AR.</li>
+  </ul>
+  <br>
+  <strong>🎞️ Sobre os modelos animados:</strong><br>
+  No modo AR, a câmera usa <strong>visão computacional</strong> para <strong>reconhecer sua mão em tempo real</strong> 🖐️.<br><br>
+  Ao <strong>aproximar o dedo indicador do polegar</strong>, o sistema mede essa distância e <strong>diminui a escala</strong>.<br>
+  Ao <strong>afastar os dois dedos</strong>, o modelo cresce, como se florescesse em sua palma 🦋.<br><br>
+  <ul style='padding-left:18px; margin-top:6px; text-align:left;'>
+    <li><strong>📍 Fixar Posição:</strong> O botão “Fixar” prende o modelo no espaço, permitindo mover a mão livremente.</li>
+    <li><strong>⏸️ Pausar:</strong> Interrompe a animação atual.</li>
+    <li><strong>⚡ Velocidade:</strong> Ajuste o ritmo da animação.</li>
+  </ul>
+  <br>
+  <em>Dica:</em> Mantenha a mão centralizada e bem iluminada para melhor rastreamento 💡.
+  `
+)">
+      <div class="story-circle">
+        <img src="https://cdn-icons-png.flaticon.com/512/5695/5695669.png" alt="Controles e Gestos">
+      </div>
       <span class="story-text">Controles</span>
     </div>
+
+    <!-- CRÉDITOS -->
     <div class="story-item" onclick="openCredits()">
       <div class="story-circle" style="border-color:#ffc107;">
         <img src="https://cdn-icons-png.flaticon.com/512/15466/15466060.png" alt="Créditos">
@@ -270,7 +303,7 @@
   </div>
 
   <!-- ==================== -->
-  <!-- MODAIS GENÉRICOS -->
+  <!-- MODAIS -->
   <!-- ==================== -->
   <div id="genericModal" class="modal-overlay">
     <div class="details-box">
@@ -289,42 +322,38 @@
     </div>
   </div>
 
-  <!-- ==================== -->
-  <!-- MODAL CRÉDITOS -->
-  <!-- ==================== -->
-  <div id="creditsModal" class="modal-overlay">
+    <div id="creditsModal" class="modal-overlay">
     <div class="details-box">
       <h3>Créditos dos Modelos 3D</h3>
       <ul style="list-style:none;padding-left:0;font-size:0.9rem;color:#555;">
-        <li>🌿 <strong>Monstera Deliciosa</strong> – <a href="https://sketchfab.com/3d-models/monstera-deliciosa-potted-mid-century-plant-1ab9bf841df04c07b1819be596327629" target="_blank">Giora</a></li>
-        <li>🌱 <strong>Dracena Variegata</strong> – <a href="https://sketchfab.com/3d-models/indoor-plant-7c5e77d572c848458e5d898ac49f6f27" target="_blank">Malek Almsri</a></li>
+        <li>🌿 <strong>Monstera</strong> – <a href="https://sketchfab.com/3d-models/monstera-deliciosa-potted-mid-century-plant-1ab9bf841df04c07b1819be596327629" target="_blank">Giora</a></li>
+        <li>🌱 <strong>Dracena</strong> – <a href="https://sketchfab.com/3d-models/indoor-plant-7c5e77d572c848458e5d898ac49f6f27" target="_blank">Malek Almsri</a></li>
         <li>🌸 <strong>Blanket Phlox</strong> – <a href="https://sketchfab.com/3d-models/blanket-phlox-69bf5e21f767419dafec910f7a6be799" target="_blank">eb78</a></li>
-        <li>🌾 <strong>Rhizome Plant</strong> – <a href="https://sketchfab.com/3d-models/rhyzome-plant-7191a1b935ac452987866573713e4da5" target="_blank">Blizzy</a></li>
-        <li>🌼 <strong>Lírios</strong> – <a href="https://sketchfab.com/3d-models/flower-model-v001-351d63de2833444ab94f98ce1a7c239c" target="_blank">Kiem Truong </a></li>
-        <li>💮 <strong>Orquídea Rosa</strong> – <a href="https://sketchfab.com/3d-models/orchidea-9e351f19b3ba4910b7d15954e49ae178" target="_blank">Antonio Rossini</a></li>
-        <li>🦋 <strong>Borboleta Azul</strong> – <a href="https://sketchfab.com/3d-models/ulysses-butterfly-1155effb97564974aa0553db3d5eed57" target="_blank">Ulysses Butterfly</a></li>
+        <li>🌾 <strong>Rhizome</strong> – <a href="https://sketchfab.com/3d-models/rhyzome-plant-7191a1b935ac452987866573713e4da5" target="_blank">Blizzy</a></li>
+        <li>🌼 <strong>Lírios</strong> – <a href="https://sketchfab.com/3d-models/flower-model-v001-351d63de2833444ab94f98ce1a7c239c" target="_blank">Kiem Truong</a></li>
+        <li>💮 <strong>Orquídea</strong> – <a href="https://sketchfab.com/3d-models/orchidea-9e351f19b3ba4910b7d15954e49ae178" target="_blank">Antonio Rossini</a></li>
+        <li>🦋 <strong>Borboleta Azul</strong> – <a href="https://sketchfab.com/3d-models/ulysses-butterfly-1155effb97564974aa0553db3d5eed57" target="_blank">Ulysses Butterfly (Animated)</a></li>
         <li>👽 <strong>Planta Alien</strong> – <a href="https://sketchfab.com/3d-models/sick-alien-plant-8282241e29854855823ced065cb8a661" target="_blank">Nabarun1011</a></li>
-    </ul>
       </ul>
-      <p><strong>Criado por Jade Paz 👩‍💻</strong><br><small>Desenvolvedora Full Stack & AR</small></p>
-      <a href="https://jadeprog.github.io/site/?utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank">🌐 Portfólio</a>
-      <br><br>
+
+      <p><strong>Desenvolvido por Jade Paz 👩‍💻</strong><br><small>Venha conhecer mais sobre meus trabalhos👇</small></p>
+      <a href="https://jadeprog.github.io/site" target="_blank">🌐 Portfólio</a><br><br>
       <button class="close-modal" onclick="closeCredits()">Fechar</button>
     </div>
   </div>
 
   <footer>
-    Criado com ❤️ por <a href="https://jadeprog.github.io/site/?utm_source=ig&utm_medium=social&utm_content=link_in_bio" target="_blank">@jadepaz</a>
+    Criado por jadepaz</a>
   </footer>
 
   <script>
     const plantInfo = {
       'rosa': { title: 'Rosa Clássica', desc: 'A rainha das flores.', benefits: '• Perfume marcante<br>• Decoração romântica' },
       'monstera': { title: 'Monstera Deliciosa', desc: 'Planta elegante e símbolo de crescimento.', benefits: '• Purifica o ar<br>• Decoração moderna' },
-      'dracena': { title: 'Dracena Variegata', desc: 'Planta resistente ideal para interiores.', benefits: '• Purifica toxinas<br>• Fácil de cuidar' },
+      'dracena': { title: 'Dracena Variegata', desc: 'Resistente e ideal para interiores.', benefits: '• Purifica toxinas<br>• Fácil de cuidar' },
       'phlox': { title: 'Blanket Phlox', desc: 'Planta rasteira ornamental.', benefits: '• Ideal para cobrir superfícies<br>• Atrai polinizadores' },
       'rhizome': { title: 'Rhizome Plant', desc: 'Planta tropical.', benefits: '• Traz frescor<br>• Fácil de manter' },
-      'armeria': { title: 'Armeria Marítima', desc: 'Pequena e resistente.', benefits: '• Resistente ao calor<br>• Leveza' },
+      'armeria': { title: 'Armeria Marítima', desc: 'Pequena e resistente.', benefits: '• Resistente ao calor<br>• Leveza e delicadeza' },
       'orchidea': { title: 'Orquídea Rosa', desc: 'Símbolo de beleza e força.', benefits: '• Decoração refinada<br>• Serenidade' }
     };
 
@@ -339,21 +368,16 @@
     }
 
     function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
-
     function showTip(title, html) {
       document.getElementById('tTitle').innerText = title;
       document.getElementById('tContent').innerHTML = html;
       document.getElementById('tipsModal').style.display = 'flex';
     }
     function closeTips() { document.getElementById('tipsModal').style.display = 'none'; }
-
     function openCredits() { document.getElementById('creditsModal').style.display = 'flex'; }
     function closeCredits() { document.getElementById('creditsModal').style.display = 'none'; }
-
     function openCamera(plantName) { window.location.href = `camera.html?plant=${plantName}`; }
-    function openCamera2(plantName) {window.location.href = `camera2.html?plant=${plantName}`;
-}
-
+    function openCamera2(plantName) { window.location.href = `camera2.html?plant=${plantName}`; }
   </script>
 
 </body>
