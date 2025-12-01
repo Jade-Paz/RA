@@ -60,7 +60,7 @@ p.subtitle {
 /* BOTÃO VOLTAR FIXO */
 /* ========================= */
 .nav-btn {
-  position: fixed;
+  position: absolute;
   inset: auto auto auto auto;
   top: 15px;
   left: 15px;
